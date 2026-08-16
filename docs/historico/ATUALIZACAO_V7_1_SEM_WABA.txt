@@ -1,0 +1,19 @@
+INTORNÁ PIXELS v7.1 — WHATSAPP DIRETO / SEM WABA
+
+ALTERAÇÕES
+- Inbox WhatsApp Cloud API removida da interface ativa.
+- Não exige WABA, CNPJ, App Review ou credenciais Meta para usar o fluxo de WhatsApp.
+- Botão direto para abrir WhatsApp/WhatsApp Business do cliente.
+- Mensagens prontas por etapa do atendimento.
+- Registro manual do último contato no CRM.
+- Etapa comercial do cliente salva no Supabase.
+- Telefone normalizado para links wa.me, aceitando número com ou sem código 55.
+- Botão WhatsApp direto na lista de clientes.
+- Upsell de prévias continua abrindo o WhatsApp e registrando o contato.
+
+BACKEND
+- Novos campos em public.clients:
+  whatsapp_stage
+  last_contact_at
+  last_contact_note
+- A infraestrutura oficial Cloud API criada na v7 foi mantida para uso futuro, mas a v7.1 não a chama pelo frontend.

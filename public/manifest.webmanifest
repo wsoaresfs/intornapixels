@@ -1,0 +1,9 @@
+{
+  "name":"Intorná Pixels",
+  "short_name":"Intorná",
+  "start_url":"/portal/",
+  "display":"standalone",
+  "background_color":"#08112D",
+  "theme_color":"#0B132B",
+  "icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

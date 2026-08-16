@@ -1,0 +1,12 @@
+INTORNÁ PIXELS v7.5 — ISOLAMENTO ENTRE ESTÚDIOS
+
+Correção crítica:
+- removida a migração automática do cache local do navegador para estúdios novos;
+- cada conta agora carrega exclusivamente os dados do seu studio_id no Supabase;
+- evita tentativa de reutilizar IDs de clientes/pedidos de outro estúdio e o erro de RLS;
+- importação de backup continua disponível apenas de forma manual;
+- cache do Service Worker atualizado para forçar a entrega dos arquivos corrigidos.
+
+Backend:
+- nenhuma política RLS foi afrouxada;
+- clients continua isolado por private.is_studio_member(studio_id), com exceção do platform admin.

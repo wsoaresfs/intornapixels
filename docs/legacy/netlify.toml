@@ -1,0 +1,24 @@
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/entrar"
+  to = "/portal/"
+  status = 301
+
+[[redirects]]
+  from = "/painel"
+  to = "/app/"
+  status = 301
+
+[[redirects]]
+  from = "/administracao"
+  to = "/admin/"
+  status = 301

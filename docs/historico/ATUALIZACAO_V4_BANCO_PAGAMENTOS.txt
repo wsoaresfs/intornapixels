@@ -1,0 +1,16 @@
+INTORNÁ PIXELS v4 — BANCO ONLINE E PAGAMENTO RECORRENTE
+
+Incluído:
+- Schema Postgres multiestúdio para Supabase.
+- Supabase Auth e políticas RLS.
+- Planos Gratuito, Start, Pro e Studio.
+- Assinaturas e pagamentos.
+- Clientes, pedidos, extras, checklists, suporte, cupons, avisos, uso mensal e auditoria.
+- Edge Function para criar assinatura no Asaas.
+- Edge Function autenticada por token para webhooks do Asaas.
+- Edge Function para cancelamento.
+- Idempotência de webhook.
+- Guia de implantação e sandbox.
+
+IMPORTANTE:
+A cobrança não deve ir para produção sem uma conta Asaas e credenciais reais, e o frontend v3 ainda usa LocalStorage até a próxima migração para Supabase.

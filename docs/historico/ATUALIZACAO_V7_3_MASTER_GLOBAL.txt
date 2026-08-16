@@ -1,0 +1,11 @@
+INTORNÁ PIXELS v7.3 — MASTER GLOBAL
+
+- Nova área Clientes & Pedidos na Central Administrativa.
+- Master vê clientes de todos os estúdios.
+- Busca global e filtro por estúdio.
+- Edição de nome, e-mail, WhatsApp, cidade, data importante, etapa e observações.
+- Visualização de pedidos vinculados.
+- Alteração de status do pedido e status de pagamento.
+- Botão para abrir a operação do estúdio correspondente.
+- Exclusão de cliente com confirmação dupla; pedidos vinculados são removidos pelo relacionamento ON DELETE CASCADE.
+- Nenhuma senha ou chave privada adicionada ao frontend.

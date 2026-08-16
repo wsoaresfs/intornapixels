@@ -1,0 +1,40 @@
+INTORNÁ PIXELS v6 — GROWTH + IA + PORTAL DO CLIENTE
+
+O QUE FOI ADICIONADO
+1. Geração de imagens dentro do app usando OpenAI GPT Image 2 via Edge Function segura.
+2. Uso de imagens de referência para preservação de identidade do cliente.
+3. Limite mensal de geração por plano: Free 0, Start 5, Pro 30, Studio 100.
+4. Portal do cliente com link seguro por pedido.
+5. Galeria de prévias, seleção de fotos, liberação de finais e compra de extras.
+6. Checkout de extras via Asaas com PIX, boleto e cartão.
+7. Preço automático de combo de 3 e 5 fotos quando for mais vantajoso.
+8. Upgrade automático para o próximo pacote (Essencial > Premium > Gold > Platinum).
+9. Upload de referências pelo cliente via link seguro.
+10. White Label no plano Studio.
+11. Marketplace de modelos de ensaio.
+12. AI Director com sequência inteligente de fotos e instruções de consistência.
+13. Controle de custos, lucro e margem por pedido.
+14. Ranking de oportunidades comerciais e atalhos de WhatsApp.
+15. Programa de indicação com código individual por estúdio.
+16. Storage privado no Supabase para referências e imagens geradas.
+17. Webhook atualizado para liberar extras e aplicar upgrade somente após pagamento confirmado.
+
+SEGURANÇA
+- OPENAI_API_KEY e ASAAS_API_KEY ficam somente nos Secrets das Edge Functions.
+- O navegador recebe apenas a chave publishable do Supabase.
+- Arquivos do cliente ficam em bucket privado e são entregues por URLs assinadas.
+- Portal público usa token aleatório; no banco é salvo apenas o SHA-256 do token.
+- RLS permanece habilitado para dados multiestúdio.
+- Supabase Security Advisor: zero alertas de segurança após a migração v6.
+
+O QUE AINDA PRECISA DE CREDENCIAL DO PROPRIETÁRIO
+- OPENAI_API_KEY: ativa a geração real de imagens.
+- ASAAS_API_KEY: ativa cobranças reais/sandbox.
+- ASAAS_WEBHOOK_TOKEN: autentica os eventos do Asaas.
+- ASAAS_BASE_URL: usar Sandbox enquanto estiver testando.
+
+URL DO WEBHOOK
+https://sqeqehohwrfqtbdxcnfs.supabase.co/functions/v1/asaas-webhook
+
+PRIMEIRO ACESSO
+Ainda não há usuários cadastrados no Supabase. Depois de publicar no Netlify, abra /portal/, crie a primeira conta e confirme o e-mail. O onboarding transforma a primeira conta em administrador principal da plataforma e cria o primeiro estúdio.

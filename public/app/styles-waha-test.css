@@ -1,0 +1,27 @@
+.waha-test-root{margin-top:18px;border:1px dashed rgba(255,255,255,.12)}
+.waha-topbar{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}
+.waha-pill{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;font-size:.86rem;font-weight:800;border:1px solid var(--line,#2b3559);background:rgba(255,255,255,.04)}
+.waha-pill.connected{background:rgba(32,196,125,.12);color:#9ff2c8;border-color:rgba(32,196,125,.35)}
+.waha-pill.warning{background:rgba(255,179,71,.12);color:#ffd193;border-color:rgba(255,179,71,.35)}
+.waha-pill.danger{background:rgba(255,107,107,.12);color:#ffb5b5;border-color:rgba(255,107,107,.35)}
+.waha-pill.idle{background:rgba(255,255,255,.05);color:#dfe6ff}
+.waha-config-box{background:rgba(255,255,255,.03);border-radius:14px;padding:14px;margin-bottom:18px}
+.waha-config-box summary{cursor:pointer;font-weight:800}
+.waha-config-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.waha-config-grid .full{grid-column:1/-1}
+.waha-qr-shell,.waha-shell{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.waha-qr-card,.waha-help-card,.waha-list-panel,.waha-chat-panel{background:rgba(255,255,255,.03);border:1px solid var(--line,#2b3559);border-radius:16px;padding:14px}
+.waha-qr-box{min-height:250px;display:grid;place-items:center;text-align:center;gap:10px;color:var(--muted,#b7c3e0);background:rgba(0,0,0,.14);border-radius:14px;padding:16px}
+.waha-qr-box img{max-width:min(100%,260px);border-radius:12px;background:#fff;padding:10px}
+.waha-list{display:grid;gap:8px;max-height:540px;overflow:auto;margin-top:8px}
+ .waha-chat-item{display:grid;gap:4px;text-align:left;border:1px solid var(--line,#2b3559);border-radius:14px;background:rgba(255,255,255,.03);padding:12px;color:inherit;cursor:pointer}
+.waha-chat-item.active{border-color:#f6b93b;box-shadow:0 0 0 1px rgba(246,185,59,.35) inset}
+.waha-chat-item small,.waha-chat-item span{opacity:.78}
+.waha-chat-head{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:10px}
+.waha-messages{min-height:340px;max-height:460px;overflow:auto;background:rgba(0,0,0,.12);border-radius:14px;padding:14px;display:grid;gap:10px}
+.waha-bubble{max-width:78%;padding:10px 12px;border-radius:14px;display:grid;gap:6px}
+.waha-bubble.in{background:rgba(255,255,255,.07);justify-self:start}
+.waha-bubble.out{background:rgba(246,185,59,.18);justify-self:end}
+.waha-bubble small{opacity:.75}
+.waha-compose-box{display:grid;gap:10px;margin-top:12px}
+@media (max-width: 980px){.waha-qr-shell,.waha-shell,.waha-config-grid{grid-template-columns:1fr}.waha-bubble{max-width:92%}.waha-topbar{flex-direction:column;align-items:flex-start}}

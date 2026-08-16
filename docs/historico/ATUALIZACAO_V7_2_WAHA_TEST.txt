@@ -1,0 +1,18 @@
+INTORNÁ PIXELS v7.2 — WAHA TESTE (SOMENTE ADMIN)
+
+O que foi adicionado:
+- Painel experimental WAHA dentro da aba WhatsApp do app operacional.
+- Disponível somente para administrador da plataforma.
+- Conexão por URL + API Key + sessão do WAHA.
+- Botões para verificar status, iniciar sessão, reiniciar, logout e carregar QR Code.
+- Lista de conversas via WAHA.
+- Histórico de mensagens da conversa selecionada.
+- Envio de texto pela própria interface.
+- Campo de número manual para testar envio mesmo sem conversa aberta.
+- Edge Function nova: waha-test.
+- Nenhum cliente do SaaS recebe essa função por padrão; é apenas um modo de teste para o administrador.
+
+Importante:
+- A função depende de uma instância WAHA rodando em um servidor seu.
+- Este modo é experimental e não substitui a estratégia principal sem WABA.
+- As credenciais do WAHA ficam salvas somente no navegador do administrador, para facilitar o teste.

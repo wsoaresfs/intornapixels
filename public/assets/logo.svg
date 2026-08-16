@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" role="img" aria-labelledby="title desc">
+  <title id="title">Intorná Pixels</title>
+  <desc id="desc">Logotipo com símbolo de moldura e pixels.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563EB"/>
+      <stop offset="0.55" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#F2BA2A"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(12 18)">
+    <path d="M18 76V28Q18 12 34 12h48v18H40q-4 0-4 4v42z" fill="#0B132B"/>
+    <path d="M90 30h42q16 0 16 16v46q0 16-16 16H88V90h38q4 0 4-4V48H90z" fill="#0B132B"/>
+    <path d="M18 84v24q0 16 16 16h42v-18H40q-4 0-4-4V84z" fill="#2563EB"/>
+    <rect x="102" y="2" width="16" height="16" rx="2" fill="#7C3AED"/>
+    <rect x="122" y="18" width="13" height="13" rx="2" fill="#7C3AED"/>
+    <rect x="139" y="34" width="11" height="11" rx="2" fill="#7C3AED"/>
+    <rect x="82" y="49" width="12" height="12" rx="2" fill="#F2BA2A"/>
+  </g>
+  <g fill="#0B132B">
+    <text x="184" y="90" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="4">INTORNÁ</text>
+    <text x="188" y="128" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="600" letter-spacing="12" fill="url(#g)">PIXELS</text>
+  </g>
+</svg>

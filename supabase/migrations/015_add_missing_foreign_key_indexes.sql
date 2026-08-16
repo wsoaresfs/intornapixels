@@ -1,0 +1,11 @@
+create index if not exists ai_generation_jobs_requested_by_idx on public.ai_generation_jobs(requested_by);
+create index if not exists client_payments_studio_idx on public.client_payments(studio_id);
+create index if not exists client_references_studio_idx on public.client_references(studio_id);
+create index if not exists cost_entries_studio_idx on public.cost_entries(studio_id);
+create index if not exists gallery_selections_studio_idx on public.gallery_selections(studio_id);
+create index if not exists portal_links_created_by_idx on public.portal_links(created_by);
+create index if not exists template_favorites_template_idx on public.template_favorites(template_id);
+create index if not exists whatsapp_conversations_assigned_user_idx on public.whatsapp_conversations(assigned_user_id);
+create index if not exists whatsapp_conversations_contact_idx on public.whatsapp_conversations(contact_id);
+create index if not exists whatsapp_messages_contact_idx on public.whatsapp_messages(contact_id);
+create index if not exists whatsapp_messages_sent_by_idx on public.whatsapp_messages(sent_by);

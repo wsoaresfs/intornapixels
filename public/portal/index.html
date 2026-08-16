@@ -1,0 +1,93 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0B132B"><title>Entrar — Intorná Pixels</title><link rel="manifest" href="/manifest.webmanifest"><style>
+:root{--night:#0B132B;--violet:#7C3AED;--blue:#2563EB;--gold:#F2BA2A;--line:#E5E7EB;--muted:#667085}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 90% 0,#7C3AED55,transparent 34%),linear-gradient(135deg,#08112D,#17215A);min-height:100vh;display:grid;place-items:center;padding:20px;color:#111827}.box{width:min(980px,100%);display:grid;grid-template-columns:1.05fr .95fr;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 35px 90px #02061766}.visual{padding:52px;background:linear-gradient(145deg,#0B132B,#25115B);color:#fff}.visual img{width:260px;filter:brightness(0) invert(1)}.visual h1{font-size:42px;line-height:1.05;margin:48px 0 16px}.visual p{color:#CBD1EF;line-height:1.65}.benefits{margin-top:28px;display:grid;gap:12px}.benefits div{display:flex;gap:10px;color:#E9ECFF}.login{padding:42px}.login h2{font-size:29px;margin:0 0 8px}.muted{color:var(--muted)}.tabs{display:flex;background:#F1F5F9;border-radius:12px;padding:4px;margin:20px 0}.tabs button{flex:1;border:0;background:transparent;padding:10px;border-radius:9px;font-weight:800;cursor:pointer}.tabs button.active{background:#fff;box-shadow:0 2px 8px #0f172a14}.panel{display:none}.panel.active{display:block}label{display:block;font-size:13px;font-weight:800;margin:14px 0 6px}input{width:100%;padding:13px;border:1px solid #CBD5E1;border-radius:11px;font:inherit}.btn{width:100%;padding:13px;border:0;border-radius:11px;font:inherit;font-weight:900;cursor:pointer}.btn:disabled,.link:disabled,.tabs button:disabled{opacity:.58;cursor:not-allowed}.primary{margin-top:18px;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff}.ghost{margin-top:10px;background:#EEF2F7}.link{border:0;background:none;color:var(--blue);font-weight:800;cursor:pointer;padding:8px 0}.msg{display:none;margin-top:14px;padding:12px;border-radius:10px;font-size:13px;line-height:1.5}.msg.error{background:#FEE2E2;color:#991B1B}.msg.ok{background:#DCFCE7;color:#166534}.cloud{margin-top:18px;padding:12px;background:#EEFDF7;border:1px solid #BBF7D0;border-radius:12px;font-size:12px}.footer{margin-top:20px;text-align:center;font-size:12px;color:var(--muted)}.inline-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.recovery-card{padding:16px;border:1px solid #C7D2FE;background:#EEF2FF;border-radius:14px;margin-top:14px}.recovery-card h3{margin:0 0 5px}.password-hint{font-size:12px;color:var(--muted);margin-top:6px}@media(max-width:760px){.box{grid-template-columns:1fr}.visual{display:none}.login{padding:28px 22px}}
+</style></head><body><div class="box"><section class="visual"><img src="/assets/logo.svg" alt="Intorná Pixels"><h1>Seu estúdio conectado à nuvem.</h1><p>Login real, banco multiestúdio e administração central protegida pelo Supabase.</p><div class="benefits"><div>✓ Dados separados por estúdio</div><div>✓ Login seguro e sessão online</div><div>✓ Planos e limites protegidos no banco</div><div>✓ Recuperação de conta e onboarding automático</div></div></section><section class="login"><h2>Acessar a plataforma</h2><p class="muted">Entre ou crie sua conta.</p><div class="tabs" id="authTabs"><button id="tabLogin" class="active" type="button">Entrar</button><button id="tabSignup" type="button">Criar conta</button></div>
+<div id="loginPanel" class="panel active"><form id="loginForm"><label>E-mail</label><input id="loginEmail" type="email" autocomplete="username" required placeholder="seu@email.com"><label>Senha</label><input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Sua senha"><button class="btn primary" id="loginSubmit" type="submit">Entrar</button></form><div class="inline-actions"><button class="link" id="forgotBtn" type="button">Esqueci minha senha</button><button class="link" id="resendBtn" type="button" style="display:none">Reenviar confirmação</button></div></div>
+<div id="signupPanel" class="panel"><form id="signupForm"><label>Seu nome</label><input id="signupName" required placeholder="Nome completo"><label>Nome do estúdio</label><input id="signupStudio" required placeholder="Ex.: Meu Estúdio"><label>Código de indicação (opcional)</label><input id="signupReferral" placeholder="Ex.: PIX12345678"><label>E-mail</label><input id="signupEmail" type="email" autocomplete="username" required placeholder="seu@email.com"><label>Senha</label><input id="signupPassword" type="password" minlength="8" autocomplete="new-password" required placeholder="Mínimo 8 caracteres"><div class="password-hint">Use pelo menos 8 caracteres e evite senhas reutilizadas.</div><button class="btn primary" id="signupSubmit" type="submit">Criar minha conta</button></form></div>
+<div id="recoveryPanel" class="panel"><div class="recovery-card"><h3>Defina sua nova senha</h3><p class="muted">Crie uma nova senha para voltar a acessar o Intorná Pixels.</p><form id="recoveryForm"><label>Nova senha</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password" required placeholder="Mínimo 8 caracteres"><label>Confirmar nova senha</label><input id="newPassword2" type="password" minlength="8" autocomplete="new-password" required placeholder="Digite novamente"><button class="btn primary" id="recoverySubmit" type="submit">Salvar nova senha</button></form></div></div>
+<div class="msg error" id="error"></div><div class="msg ok" id="ok"></div><div class="cloud"><b>Banco online ativo.</b><br>Ao confirmar o e-mail e entrar, o sistema conclui automaticamente a criação e o vínculo do estúdio.</div><button class="btn ghost" id="backBtn" type="button">Voltar ao site</button><div class="footer">Intorná Pixels — autenticação Supabase</div></section></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.min.js"></script><script src="/shared/supabase-config.js"></script><script src="/shared/cloud.js"></script><script>
+const $=id=>document.getElementById(id),err=$('error'),ok=$('ok');
+let routing=false,recoveryMode=new URLSearchParams(location.search).get('mode')==='recovery';
+const redirectBase=()=>location.origin+'/portal/';
+const redirectRecovery=()=>location.origin+'/portal/?mode=recovery';
+function showMsg(el,msg){err.style.display='none';ok.style.display='none';el.textContent=msg;el.style.display='block'}
+function clearMsg(){err.style.display='none';ok.style.display='none'}
+function friendlyError(e,kind='auth'){
+  const raw=String(e?.message||e||'').toLowerCase();
+  if(raw.includes('invalid login credentials'))return 'E-mail ou senha incorretos. Confira os dados ou use “Esqueci minha senha”.';
+  if(raw.includes('email not confirmed'))return 'Seu e-mail ainda não foi confirmado. Abra o e-mail de confirmação ou use “Reenviar confirmação”.';
+  if(raw.includes('rate limit')||raw.includes('security purposes')||raw.includes('after '))return 'Muitas tentativas em pouco tempo. Aguarde cerca de 1 minuto e tente novamente.';
+  if(raw.includes('already registered')||raw.includes('user already registered')||raw.includes('email address is already'))return 'Este e-mail já possui cadastro. Entre com sua senha ou use “Esqueci minha senha”.';
+  if(raw.includes('expired')||raw.includes('invalid')&&kind==='link')return 'Este link já foi usado ou expirou. Solicite um novo e-mail e tente novamente.';
+  if(raw.includes('password')&&raw.includes('weak'))return 'Escolha uma senha mais forte, com pelo menos 8 caracteres.';
+  return e?.message||String(e||'Não foi possível concluir a operação.');
+}
+function setBusy(btn,busy,labelBusy,labelIdle){btn.disabled=busy;btn.textContent=busy?labelBusy:labelIdle}
+function showResend(email=''){if(email)$('loginEmail').value=email;$('resendBtn').style.display='inline-block'}
+function setTab(which){
+  recoveryMode=which==='recovery';
+  const login=which==='login',signup=which==='signup',recovery=which==='recovery';
+  $('authTabs').style.display=recovery?'none':'flex';
+  $('tabLogin').classList.toggle('active',login);$('tabSignup').classList.toggle('active',signup);
+  $('loginPanel').classList.toggle('active',login);$('signupPanel').classList.toggle('active',signup);$('recoveryPanel').classList.toggle('active',recovery);clearMsg();
+}
+$('tabLogin').onclick=()=>setTab('login');$('tabSignup').onclick=()=>setTab('signup');$('backBtn').onclick=()=>location.href='/';
+async function pendingProfile(){try{return JSON.parse(localStorage.getItem('intorna_pending_profile')||'{}')}catch{return {}}}
+async function finish(profile={}){
+  if(routing||recoveryMode)return;
+  routing=true;showMsg(ok,'Preparando seu estúdio…');
+  try{const dest=await IntornaCloud.route(profile);localStorage.removeItem('intorna_pending_profile');location.replace(dest)}catch(e){routing=false;showMsg(err,friendlyError(e))}
+}
+$('loginForm').onsubmit=async e=>{
+  e.preventDefault();const btn=$('loginSubmit');setBusy(btn,true,'Entrando…','Entrar');clearMsg();
+  const email=$('loginEmail').value.trim().toLowerCase();
+  try{
+    const {error}=await IntornaCloud.client.auth.signInWithPassword({email,password:$('loginPassword').value});
+    if(error)throw error;
+    await finish(await pendingProfile());
+  }catch(e){const msg=friendlyError(e);showMsg(err,msg);if(String(e?.message||'').toLowerCase().includes('email not confirmed'))showResend(email)}
+  finally{if(!routing)setBusy(btn,false,'Entrando…','Entrar')}
+};
+$('signupForm').onsubmit=async e=>{
+  e.preventDefault();const btn=$('signupSubmit');if(btn.disabled)return;setBusy(btn,true,'Criando conta…','Criar minha conta');clearMsg();
+  const full_name=$('signupName').value.trim(),studio_name=$('signupStudio').value.trim(),referral_code=$('signupReferral').value.trim().toUpperCase(),email=$('signupEmail').value.trim().toLowerCase(),password=$('signupPassword').value;
+  const profile={full_name,studio_name,referral_code};
+  try{
+    localStorage.setItem('intorna_pending_profile',JSON.stringify(profile));
+    const {data,error}=await IntornaCloud.client.auth.signUp({email,password,options:{data:profile,emailRedirectTo:redirectBase()}});
+    if(error)throw error;
+    if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){showResend(email);showMsg(err,'Este e-mail já possui cadastro. Entre com a senha existente ou use “Esqueci minha senha”.');return}
+    if(data.session){await finish(profile)}else{showResend(email);showMsg(ok,'Conta criada. Enviamos um e-mail de confirmação. Confirme o endereço e depois o sistema concluirá automaticamente seu estúdio.')}
+  }catch(e){showMsg(err,friendlyError(e));if(String(e?.message||'').toLowerCase().includes('already'))showResend(email)}
+  finally{if(!routing)setBusy(btn,false,'Criando conta…','Criar minha conta')}
+};
+$('resendBtn').onclick=async()=>{
+  const btn=$('resendBtn'),email=($('loginEmail').value||$('signupEmail').value).trim().toLowerCase();if(!email){showMsg(err,'Digite seu e-mail primeiro.');return}
+  btn.disabled=true;btn.textContent='Enviando…';
+  try{const {error}=await IntornaCloud.client.auth.resend({type:'signup',email,options:{emailRedirectTo:redirectBase()}});if(error)throw error;showMsg(ok,'Novo e-mail de confirmação enviado. Se não aparecer, confira também a caixa de spam.')}
+  catch(e){showMsg(err,friendlyError(e))}finally{btn.disabled=false;btn.textContent='Reenviar confirmação'}
+};
+$('forgotBtn').onclick=async()=>{
+  const btn=$('forgotBtn'),email=$('loginEmail').value.trim().toLowerCase();if(!email){showMsg(err,'Digite seu e-mail primeiro.');return}
+  btn.disabled=true;btn.textContent='Enviando…';
+  try{const {error}=await IntornaCloud.client.auth.resetPasswordForEmail(email,{redirectTo:redirectRecovery()});if(error)throw error;showMsg(ok,'Enviamos o link de recuperação. Abra o e-mail e use o link para definir uma nova senha.')}
+  catch(e){showMsg(err,friendlyError(e))}finally{btn.disabled=false;btn.textContent='Esqueci minha senha'}
+};
+$('recoveryForm').onsubmit=async e=>{
+  e.preventDefault();const btn=$('recoverySubmit'),p1=$('newPassword').value,p2=$('newPassword2').value;if(p1.length<8){showMsg(err,'A nova senha precisa ter pelo menos 8 caracteres.');return}if(p1!==p2){showMsg(err,'As duas senhas não são iguais.');return}
+  setBusy(btn,true,'Salvando…','Salvar nova senha');
+  try{const {error}=await IntornaCloud.client.auth.updateUser({password:p1});if(error)throw error;await IntornaCloud.client.auth.signOut();history.replaceState({},'',location.pathname);setTab('login');showMsg(ok,'Senha atualizada. Agora entre usando sua nova senha.')}
+  catch(e){showMsg(err,friendlyError(e))}finally{setBusy(btn,false,'Salvando…','Salvar nova senha')}
+};
+function handleUrlError(){
+  const h=new URLSearchParams(location.hash.replace(/^#/,'')),q=new URLSearchParams(location.search);const desc=h.get('error_description')||q.get('error_description');if(desc){showMsg(err,friendlyError({message:decodeURIComponent(desc)},'link'));history.replaceState({},'',location.pathname)}
+}
+IntornaCloud.client.auth.onAuthStateChange(async(event,session)=>{
+  if(event==='PASSWORD_RECOVERY'){recoveryMode=true;setTab('recovery');showMsg(ok,'Link validado. Defina sua nova senha abaixo.');return}
+  if(event==='SIGNED_IN'&&session&&!recoveryMode&&!routing){setTimeout(async()=>{if(!routing&&!recoveryMode)await finish(await pendingProfile())},0)}
+});
+(async()=>{
+  handleUrlError();if(recoveryMode){setTab('recovery');return}
+  const s=await IntornaCloud.getSession().catch(()=>null);if(s)await finish(await pendingProfile());
+})();
+</script></body></html>

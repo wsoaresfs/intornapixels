@@ -1,0 +1,46 @@
+INTORNÁ PIXELS v7.4 — CORREÇÃO DE CADASTRO E LOGIN
+Data: 11/08/2026
+
+CORREÇÕES PRINCIPAIS
+1. Bootstrap de conta atualizado para v3 no Supabase.
+   - Recupera automaticamente usuário autenticado que ficou sem vínculo com estúdio.
+   - Recupera estúdio existente sem membership.
+   - Cria estúdio + membership quando o Auth/perfil existe, mas o onboarding ficou incompleto.
+   - Valida erros críticos antes de considerar o onboarding concluído.
+
+2. Cadastro protegido contra envio duplicado.
+   - Botão fica bloqueado durante a requisição.
+   - Evita duas chamadas simultâneas ao endpoint de signup.
+
+3. Login com mensagens claras.
+   - E-mail/senha incorretos.
+   - E-mail ainda não confirmado.
+   - Limite temporário de tentativas/e-mails.
+   - Link inválido ou expirado.
+
+4. Reenvio de confirmação.
+   - Novo botão "Reenviar confirmação".
+   - Respeita o intervalo de segurança do Supabase.
+
+5. Recuperação de senha concluída.
+   - "Esqueci minha senha" envia para /portal/?mode=recovery.
+   - O portal reconhece PASSWORD_RECOVERY.
+   - Usuário define e confirma a nova senha.
+   - A nova senha é salva com Supabase Auth e o usuário volta ao login.
+
+6. Sessão recém-confirmada mais resiliente.
+   - Se bootstrap retornar 401 em uma sessão recém-criada, o cliente tenta renovar a sessão uma vez e repete o bootstrap.
+
+7. Cache atualizado.
+   - Service Worker: intorna-pixels-v7-4-auth-fix.
+
+REPARO DE DADOS REALIZADO
+- A conta que estava confirmada, mas sem studio_members, foi reparada no banco.
+- Após a revisão, todas as contas atuais têm perfil e membership ativo.
+
+CONFIGURAÇÃO EXTERNA A CONFERIR ANTES DA PRODUÇÃO
+- Supabase > Authentication > URL Configuration:
+  - Site URL deve apontar para o domínio publicado.
+  - O domínio/rota /portal/ precisa estar na lista de Redirect URLs.
+  - O fluxo de recovery usa /portal/?mode=recovery.
+- Para produção, configurar SMTP próprio é recomendado para melhor entrega e limites de e-mails.
