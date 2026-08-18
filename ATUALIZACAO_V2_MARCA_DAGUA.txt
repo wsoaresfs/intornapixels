@@ -1,0 +1,17 @@
+INTORNÁ PIXELS v2 — MARCA-D’ÁGUA E UPSELL
+
+NOVO NO SISTEMA
+- Campo de fotos extras no cadastro do pedido.
+- Botão “Prévia” na fila de produção.
+- Processamento local de várias imagens.
+- Marca-d’água em texto, logo ou ambos.
+- Posições: diagonal, centro, repetida e canto inferior.
+- Controle de transparência, tamanho, qualidade e resolução.
+- Aplicação somente nas fotos que excedem o pacote contratado.
+- Download individual ou em um único arquivo ZIP.
+- Mensagem automática de oferta para WhatsApp.
+- Valores configuráveis: avulsa, combo de 3 e combo de 5.
+- Registro de venda adicional no pedido e no financeiro.
+
+PUBLICAÇÃO
+Envie o ZIP completo para o Netlify em Deploy manually.

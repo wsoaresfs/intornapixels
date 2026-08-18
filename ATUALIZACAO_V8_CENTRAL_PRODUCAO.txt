@@ -1,0 +1,22 @@
+INTORNÁ PIXELS v8 — CENTRAL DE PRODUÇÃO
+
+Esta versão transforma a lista de pedidos em uma operação visual completa.
+
+Principais novidades
+- Nova área “Produção” no menu principal.
+- Quadro Kanban com as etapas Aguardando fotos, Pagamento pendente, Em produção, Em revisão, Pronto para entrega e Entregue.
+- Arrastar cartões entre etapas no computador.
+- Setas para avançar e voltar etapas no celular.
+- Contadores de pedidos atrasados, vencendo hoje e em produção.
+- Total financeiro ainda a receber.
+- Busca por cliente, tipo de ensaio ou pacote.
+- Filtros de pagamento e prazo.
+- Cartões com cliente, pacote, quantidade, formato, valor, pagamento e prazo.
+- Botão inteligente que abre a ferramenta correta para a etapa atual.
+- Acesso rápido ao WhatsApp com mensagem de atualização do pedido.
+- Todas as mudanças continuam sincronizadas com o banco online.
+
+Publicação
+Substitua a versão anterior pelo conteúdo completo deste pacote. Não é necessária
+uma nova migração SQL para a Central de Produção, pois ela usa os pedidos e status
+já existentes no banco da v7.

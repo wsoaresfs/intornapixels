@@ -1,44 +1,50 @@
-# Intorná Pixels v7.7 — Estrutura Vercel
+# Intorná Pixels v11 — Comercial, Orçamentos e Produção
 
-Estrutura preparada para migrar o frontend do **Netlify para a Vercel**, mantendo o **Supabase como backend**.
+SaaS multiestúdio para organizar vendas, produção e entrega de ensaios fotográficos criados com IA.
+
+## Novidades v10 — Funil Comercial
+- quadro Kanban com etapas do novo lead ao fechamento;
+- origem, campanha, valor provável e anotações por oportunidade;
+- filtros, busca, atalhos para WhatsApp e orçamento;
+- movimentação por arrastar no computador e setas no celular;
+- Performance de Vendas filtrável por origem e campanha;
+- faturamento calculado pela data em que o pedido foi marcado como pago.
+
+## Novidades v11 — Orçamentos Inteligentes
+- cálculo automático de pacote, adicionais e desconto;
+- validade e status da proposta;
+- envio de mensagem pronta pelo WhatsApp;
+- impressão ou salvamento em PDF;
+- indicadores de negociação e valor em aberto;
+- conversão direta do orçamento em pedido, sem redigitar dados;
+- sincronização no workspace online do estúdio.
+
+## Recursos anteriores
+- Central de Produção Kanban com prazos, pagamentos e ações rápidas;
+- Performance com faturamento, conversão, CPL, CPA, ticket, resultado e ROAS;
+- WhatsApp Inbox oficial da Meta;
+- AI Director, geração de imagens, galeria e portal do cliente;
+- prévias com marca-d'água e venda de fotos extras;
+- painel administrativo, planos, cobrança Asaas, suporte e auditoria.
 
 ## Arquitetura
+- Frontend/PWA: Vercel ou hospedagem estática compatível;
+- Banco, autenticação, arquivos e Vault: Supabase;
+- Backend: Supabase Edge Functions;
+- Cobrança: Asaas;
+- Mensageria: WhatsApp Cloud API oficial da Meta.
 
-- `public/` — único diretório publicado pela Vercel.
-- `supabase/` — migrations e Edge Functions; não é publicado como conteúdo estático.
-- `docs/` — documentação e histórico; não é publicado.
-- `vercel.json` — configuração de rotas, headers, trailing slash e diretório de saída.
+## Áreas
+- `/portal/` — cadastro e login;
+- `/app/` — operação do estúdio;
+- `/admin/` — administração da plataforma;
+- `/cliente/` — galeria e checkout do cliente.
 
-## Produção
+## Instalação
+1. Execute, em ordem, todos os arquivos de `supabase/migrations/`.
+2. Implante as funções de `supabase/functions/`.
+3. Configure os segredos descritos em `BACKEND_SETUP.md`.
+4. Configure `shared/supabase-config.js` com URL e Publishable Key.
+5. Publique o conteúdo desta pasta preservando `index.html` na raiz.
 
-- Frontend/PWA: Vercel
-- Auth/Postgres/Storage/Vault/Edge Functions: Supabase
-- IA: Google Gemini Image + OpenAI
-- Pagamentos: Asaas
-- WAHA: opcional, somente Master
-
-## Rotas preservadas
-
-- `/portal/` — autenticação
-- `/app/` — operação do estúdio
-- `/admin/` — Central Administrativa Master
-- `/cliente/` — portal/área do cliente
-- `/entrar` → `/portal/`
-- `/painel` → `/app/`
-- `/administracao` → `/admin/`
-
-## Vercel
-
-O projeto é estático e não exige build. `vercel.json` define `public/` como Output Directory. Ao importar na Vercel, use o preset **Other** e mantenha a raiz do repositório como Root Directory.
-
-## Supabase Auth
-
-Depois do primeiro deploy, atualize Authentication → URL Configuration com o domínio real da Vercel. Consulte `docs/SUPABASE_AUTH_VERCEL.md`.
-
-## Segurança
-
-Nenhuma chave privada deve ser colocada na Vercel ou em `public/`. A chave publicável do Supabase pode permanecer em `public/shared/supabase-config.js`; as credenciais Google, OpenAI, Asaas e WAHA permanecem no Vault/Edge Functions do Supabase.
-
-## Pendência funcional conhecida
-
-A migração para Vercel não corrige automaticamente a pendência atual da Edge Function `generate-image`. Ela deve ser tratada separadamente antes do lançamento comercial.
+Nunca coloque Secret Key, Service Role, chave Asaas, token Meta ou chave de IA no frontend.

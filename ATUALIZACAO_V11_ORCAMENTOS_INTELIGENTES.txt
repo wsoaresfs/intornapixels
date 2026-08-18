@@ -1,0 +1,11 @@
+INTORNÁ PIXELS v11 — ORÇAMENTOS INTELIGENTES
+
+1. Criação de propostas com cliente, pacote, ensaio, formato, validade, adicionais, desconto e observações.
+2. Cálculo automático do subtotal e total.
+3. Status: Rascunho, Enviado, Aceito, Recusado, Expirado e Convertido.
+4. Mensagem pronta e envio pelo WhatsApp.
+5. Layout profissional para impressão ou salvamento em PDF.
+6. Indicadores de propostas em negociação, aceitas, convertidas e valor em aberto.
+7. Conversão direta em pedido, preservando pacote, extras, valor e cliente.
+
+Também foram incluídos no pacote a Edge Function admin-control e os complementos de banco necessários para uma instalação nova.

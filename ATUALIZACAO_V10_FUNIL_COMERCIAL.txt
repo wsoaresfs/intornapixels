@@ -1,0 +1,10 @@
+INTORNÁ PIXELS v10 — FUNIL COMERCIAL
+
+1. Novo quadro comercial em seis etapas: Novo lead, Em contato, Orçamento, Negociação, Cliente fechado e Não convertido.
+2. Cada cliente recebe origem, campanha, etapa, valor provável e anotações comerciais.
+3. Cartões podem ser arrastados no computador ou movidos pelas setas no celular.
+4. Atalhos abrem WhatsApp e criam um orçamento para o cliente.
+5. O painel Performance agora filtra por origem e campanha.
+6. O faturamento passa a considerar a data em que o pedido foi marcado como pago.
+
+Os dados do funil são sincronizados dentro das configurações operacionais do estúdio.

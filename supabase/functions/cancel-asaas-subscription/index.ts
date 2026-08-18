@@ -3,7 +3,6 @@ import { createClient } from "npm:@supabase/supabase-js@2.102.0";
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS'};
 const json=(b:unknown,s=200)=>new Response(JSON.stringify(b),{status:s,headers:{...cors,'Content-Type':'application/json'}});
 function secretKey(){const modern=Deno.env.get('SUPABASE_SECRET_KEYS');if(modern){try{const p=JSON.parse(modern);if(p?.default)return p.default as string}catch(_){}}return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||''}
-async function asaasConfig(service:any){const [{data:key},{data:cfg}]=await Promise.all([service.rpc('get_platform_integration_secret',{p_provider:'asaas'}),service.from('platform_integrations').select('asaas_environment').eq('id',1).single()]);return {apiKey:String(key||Deno.env.get('ASAAS_API_KEY')||''),base:Deno.env.get('ASAAS_BASE_URL')||(cfg?.asaas_environment==='production'?'https://api.asaas.com/v3':'https://api-sandbox.asaas.com/v3')}}
 Deno.serve(async(req:Request)=>{
   if(req.method==='OPTIONS')return new Response('ok',{headers:cors});
   if(req.method!=='POST')return json({error:'Método não permitido'},405);
@@ -20,8 +19,8 @@ Deno.serve(async(req:Request)=>{
       service.from('platform_admins').select('user_id').eq('user_id',user.id).maybeSingle()
     ]);
     if(!admin&&!['owner','admin'].includes(member?.role||''))return json({error:'Sem permissão'},403);
-    const {apiKey,base}=await asaasConfig(service);
-    if(!apiKey)return json({error:'Asaas ainda não foi conectado no Admin Master.'},503);
+    const apiKey=Deno.env.get('ASAAS_API_KEY')||'',base=Deno.env.get('ASAAS_BASE_URL')||'https://api-sandbox.asaas.com/v3';
+    if(!apiKey)return json({error:'Asaas ainda não foi configurado'},503);
     if(sub.provider_subscription_id){
       const r=await fetch(`${base}/subscriptions/${sub.provider_subscription_id}`,{method:'DELETE',headers:{'access_token':apiKey,'User-Agent':'IntornaPixels/1.0 (Supabase Edge Functions)'}});
       if(!r.ok){const detail=await r.text();return json({error:'Falha ao cancelar no Asaas',detail},502)}

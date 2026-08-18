@@ -5,18 +5,17 @@ const statusMap:Record<string,string>={PENDING:'pending',CONFIRMED:'confirmed',R
 function secretKey(){const modern=Deno.env.get('SUPABASE_SECRET_KEYS');if(modern){try{const p=JSON.parse(modern);if(p?.default)return p.default as string}catch(_){}}return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||''}
 Deno.serve(async(req:Request)=>{
   if(req.method!=='POST')return json({ok:false},405);
+  const expected=Deno.env.get('ASAAS_WEBHOOK_TOKEN')||'';
+  const received=req.headers.get('asaas-access-token')||'';
+  if(!expected||received!==expected)return json({error:'Webhook não autorizado'},401);
   try{
-    const url=Deno.env.get('SUPABASE_URL')||'',secret=secretKey();
-    if(!url||!secret)return json({error:'Backend incompleto'},503);
-    const service=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
-    const {data:vaultToken}=await service.rpc('get_platform_integration_secret',{p_provider:'asaas_webhook'});
-    const expected=String(vaultToken||Deno.env.get('ASAAS_WEBHOOK_TOKEN')||'');
-    const received=req.headers.get('asaas-access-token')||'';
-    if(!expected||received!==expected)return json({error:'Webhook não autorizado'},401);
     const payload=await req.json();
     const event=String(payload.event||'UNKNOWN');
     const payment=payload.payment||{};
     const eventKey=String(payload.id||`${event}:${payment.id||crypto.randomUUID()}`);
+    const url=Deno.env.get('SUPABASE_URL')||'',secret=secretKey();
+    if(!url||!secret)return json({error:'Backend incompleto'},503);
+    const service=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
     const {error:idemErr}=await service.from('webhook_events').insert({provider:'asaas',event_key:eventKey,payload});
     if(idemErr&&String(idemErr.code)==='23505')return json({ok:true,duplicate:true});
     if(idemErr)return json({error:idemErr.message},500);
@@ -28,6 +27,7 @@ Deno.serve(async(req:Request)=>{
     const settled=mapped==='received'||(mapped==='confirmed'&&billingType!=='PIX');
     const paidAt=settled?(payment.paymentDate?`${payment.paymentDate}T12:00:00Z`:new Date().toISOString()):null;
 
+    // Compra de fotos extras no portal do cliente.
     const {data:clientPayment}=await service.from('client_payments').select('*').eq('provider_payment_id',payment.id).maybeSingle();
     if(clientPayment){
       const wasSettled=['confirmed','received'].includes(String(clientPayment.status));

@@ -1,21 +1,21 @@
-# Edge Functions do Intorná Pixels
+# Edge Functions incluídas no pacote
 
-Funções presentes no projeto:
-- bootstrap-account
-- admin-control
-- create-asaas-subscription
-- cancel-asaas-subscription
-- asaas-webhook
-- manage-client-portal
-- client-portal
-- client-checkout
-- generate-image
-- referral-program
-- whatsapp-connect
-- whatsapp-webhook
-- whatsapp-send
-- whatsapp-media
-- integration-admin
-- waha-test
+## Core / pagamentos / portal
+- bootstrap-account — JWT obrigatório
+- admin-control — JWT obrigatório
+- create-asaas-subscription — JWT obrigatório
+- cancel-asaas-subscription — JWT obrigatório
+- asaas-webhook — webhook público com autenticação própria
+- manage-client-portal — JWT obrigatório
+- client-portal — endpoint público com token do portal
+- client-checkout — endpoint público com token do portal
+- generate-image — JWT obrigatório
+- referral-program — JWT obrigatório
 
-As funções autenticadas devem manter `verify_jwt = true`. Webhooks/portais públicos usam autenticação própria quando `verify_jwt = false`.
+## WhatsApp v7
+- whatsapp-connect — JWT obrigatório; configuração/validação da conexão Meta
+- whatsapp-webhook — público para verificação e eventos da Meta; valida assinatura quando App Secret estiver configurado
+- whatsapp-send — JWT obrigatório; texto, templates e mark-as-read
+- whatsapp-media — JWT obrigatório; proxy de mídia da Cloud API
+
+Antes de publicar, confirme no painel do Supabase se todas aparecem como ativas e se os segredos necessários estão configurados.

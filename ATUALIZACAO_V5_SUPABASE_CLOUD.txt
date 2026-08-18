@@ -1,0 +1,35 @@
+INTORNÁ PIXELS v5 — CLOUD + ADMIN REAL + CHECKOUT
+
+PRONTO NO SUPABASE
+- Banco multiestúdio real (Postgres).
+- Supabase Auth para login/cadastro e sessão.
+- RLS em todas as tabelas expostas.
+- Central administrativa com dados reais.
+- Onboarding automático do primeiro administrador.
+- Cadastro de estúdios/usuários pelo backend.
+- Limites de clientes e ensaios impostos no banco.
+- Clientes, pedidos, extras, checklist e configurações sincronizados online.
+- Chamados de suporte e avisos em nuvem.
+- Edge Functions protegidas para administração.
+- Segurança auditada sem alertas no Supabase Advisor.
+
+COBRANÇA ASAAS
+- Edge Function para criar assinatura recorrente.
+- Pix, boleto, cartão ou escolha na cobrança.
+- Retorno de link da cobrança e Pix Copia e Cola/QR Code quando disponível.
+- Webhook idempotente para pagamentos.
+- Plano pago só é ativado após confirmação financeira apropriada.
+- Cancelamento de assinatura pelo proprietário/admin.
+
+FALTA APENAS PARA COBRANÇA FUNCIONAR NO ASAAS
+1. Criar/usar uma conta Asaas Sandbox.
+2. Gerar a API Key no Asaas Sandbox.
+3. No Supabase > Edge Functions > Secrets configurar:
+   ASAAS_API_KEY=<sua chave secreta>
+   ASAAS_BASE_URL=https://api-sandbox.asaas.com/v3
+   ASAAS_WEBHOOK_TOKEN=<token forte de 32 a 255 caracteres>
+4. No Asaas criar webhook apontando para:
+   https://sqeqehohwrfqtbdxcnfs.supabase.co/functions/v1/asaas-webhook
+5. Usar no webhook exatamente o mesmo ASAAS_WEBHOOK_TOKEN.
+
+Nunca coloque ASAAS_API_KEY ou chave secreta do Supabase no JavaScript público/Netlify.

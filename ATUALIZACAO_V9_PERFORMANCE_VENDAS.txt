@@ -1,0 +1,28 @@
+INTORNÁ PIXELS v9 — PERFORMANCE DE VENDAS
+
+Módulo inspirado na referência analisada e adaptado ao funcionamento real do
+Intorná Pixels.
+
+Indicadores
+- Faturamento dos pedidos pagos.
+- Leads novos com base nos clientes cadastrados.
+- Vendas com base nos pedidos pagos.
+- Taxa de conversão de leads em vendas.
+- Gasto total com anúncios.
+- CPL: custo por lead.
+- CPA: custo por venda.
+- Ticket médio.
+- Resultado após anúncios.
+- ROAS: retorno do faturamento sobre o investimento em anúncios.
+
+Central de custos
+O estúdio pode registrar data, canal, valor e campanha de cada investimento em
+Meta Ads, Google Ads, TikTok Ads ou outros canais. Os lançamentos ficam nos dados
+sincronizados do estúdio e atualizam o painel imediatamente.
+
+Filtros disponíveis
+- Hoje.
+- Últimos 7 dias.
+- Últimos 30 dias.
+- Este mês.
+- Todo o período.

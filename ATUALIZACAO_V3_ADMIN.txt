@@ -1,0 +1,23 @@
+INTORNÁ PIXELS v3 — CENTRAL ADMINISTRATIVA E ÁREA OPERACIONAL
+
+NOVO
+- Portal de login em /portal/.
+- Área administrativa separada em /admin/.
+- Área operacional em /app/.
+- Cadastro de estúdios e senhas.
+- Separação local dos dados por estúdio.
+- Planos, limites, assinaturas e bloqueios.
+- MRR estimado e indicadores.
+- Cupons e avisos.
+- Chamados de suporte integrados.
+- Logs administrativos.
+- Modo manutenção.
+- Backup completo da plataforma.
+- Administrador pode entrar na operação de qualquer estúdio.
+
+ACESSOS INICIAIS
+Admin: admin@intornapixels.com.br / Admin@2026
+Estúdio: studio@intornapixels.com.br / Studio@2026
+
+IMPORTANTE
+Esta é uma versão local funcional para validação. Para vender como SaaS real, será necessário banco online, autenticação segura e cobrança recorrente.

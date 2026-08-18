@@ -1,0 +1,43 @@
+INTORNÁ PIXELS v7 — WHATSAPP INBOX
+
+Principais novidades
+- Caixa de entrada real do WhatsApp dentro do aplicativo.
+- Integração preparada para WhatsApp Cloud API oficial da Meta.
+- Conversas, mensagens, não lidas e status de entrega/leitura.
+- Recebimento por webhook HTTPS.
+- Envio de mensagens pelo próprio Intorná Pixels.
+- Templates aprovados da Meta para mensagens fora da janela de atendimento.
+- Texto, imagem, vídeo, áudio e documento reconhecidos no histórico.
+- Proxy seguro para abrir mídias sem expor o token da Meta.
+- Contato do WhatsApp vinculado automaticamente ao CRM pelo telefone quando houver correspondência.
+- Botão para transformar um contato do WhatsApp em cliente do CRM.
+- Conversa pode ser vinculada a um pedido.
+- Etapas: Novo lead, Orçamento, Aguardando pagamento, Aguardando fotos, Em produção, Prévias, Upsell, Entrega e Pós-venda.
+- Ações rápidas para pacotes, cobrança, solicitação de fotos, prévias, extras e entrega.
+- Respostas rápidas configuráveis.
+- Indicador de janela de 24 horas.
+- WABA ID e Phone Number ID por estúdio.
+- Access Token do WhatsApp armazenado criptografado no Supabase Vault.
+- Meta App Secret armazenado criptografado no Supabase Vault.
+- Verify Token do webhook gerado automaticamente pelo sistema e protegido no Vault.
+- RLS por estúdio e Edge Functions protegidas por autenticação quando aplicável.
+
+Edge Functions v7
+- whatsapp-connect
+- whatsapp-webhook
+- whatsapp-send
+- whatsapp-media
+
+Ativação real
+1. Publique o ZIP da v7 no Netlify.
+2. Crie/entre na conta administrativa do Intorná Pixels.
+3. Abra WhatsApp > Configurar WhatsApp Cloud API.
+4. Como administrador da plataforma, informe Meta App ID e App Secret.
+5. Copie Callback URL e Verify Token exibidos pelo Intorná Pixels para o produto Webhooks do aplicativo Meta.
+6. No Meta, assine o campo messages.
+7. Informe WABA ID, Phone Number ID e um Access Token válido na área do estúdio.
+8. Clique em Conectar e validar.
+9. Envie uma mensagem para o número conectado e verifique se a conversa aparece na Inbox.
+
+Observação SaaS
+Para que futuros assinantes conectem o próprio WhatsApp com poucos cliques, o próximo nível é habilitar o Embedded Signup da Meta. Isso depende de configurar um aplicativo Meta para o Intorná Pixels e concluir os acessos/revisões exigidos pela Meta.
