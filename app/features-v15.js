@@ -640,3 +640,16 @@ setTimeout(()=>clearInterval(boot),20000);
 window.addEventListener('beforeunload',()=>{if(refreshTimer)clearInterval(refreshTimer)});
 
 })();
+
+
+/* =========================================================
+   RC16 — CENTRAL INTELIGENTE DE VENDAS
+   ========================================================= */
+(()=>{
+  if(document.querySelector('script[data-intorna-v16]')) return;
+  const s=document.createElement('script');
+  s.src='features-v16.js';
+  s.async=false;
+  s.dataset.intornaV16='1';
+  document.body.appendChild(s);
+})();
