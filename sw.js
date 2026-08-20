@@ -1,22 +1,18 @@
-const CACHE = 'intorna-pixels-rc16-central-vendas';
+const CACHE = 'intorna-pixels-rc17-waha';
 
 const CORE = [
   '/',
   '/index.html',
-
   '/portal/',
   '/portal/index.html',
-
   '/admin/',
   '/admin/index.html',
   '/admin/admin.js',
   '/admin/styles.css',
-
   '/app/',
   '/app/index.html',
   '/app/app.js',
   '/app/bootstrap-cloud.js',
-
   '/app/features-v6.js',
   '/app/features-v7.js',
   '/app/features-v11.js',
@@ -25,28 +21,24 @@ const CORE = [
   '/app/features-v14.js',
   '/app/features-v15.js',
   '/app/features-v16.js',
+  '/app/features-v17.js',
   '/app/features-waha-test.js',
-
   '/app/styles.css',
   '/app/styles-v6.css',
   '/app/styles-v7.css',
   '/app/features-v11.css',
   '/app/styles-waha-test.css',
-
   '/cliente/',
   '/cliente/index.html',
   '/cliente/portal.js',
   '/cliente/styles.css',
-
   '/shared/supabase-config.js',
   '/shared/cloud.js',
   '/shared/platform.js',
   '/shared/tenant-bridge.js',
-
   '/assets/logo.svg',
   '/assets/icon.svg',
   '/assets/logo-horizontal.png',
-
   '/manifest.webmanifest'
 ];
 
@@ -54,7 +46,7 @@ self.addEventListener('install',event=>{
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE).then(cache=>cache.addAll(CORE)).catch(error=>{
-      console.error('Falha ao preparar cache RC16:',error);
+      console.error('Falha ao preparar cache RC17 WAHA:',error);
     })
   );
 });
