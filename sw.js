@@ -1,4 +1,4 @@
-const CACHE = 'intorna-pixels-rc15-maquina-vendas';
+const CACHE = 'intorna-pixels-rc16-central-vendas';
 
 const CORE = [
   '/',
@@ -24,6 +24,7 @@ const CORE = [
   '/app/features-v13.js',
   '/app/features-v14.js',
   '/app/features-v15.js',
+  '/app/features-v16.js',
   '/app/features-waha-test.js',
 
   '/app/styles.css',
@@ -53,7 +54,7 @@ self.addEventListener('install',event=>{
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE).then(cache=>cache.addAll(CORE)).catch(error=>{
-      console.error('Falha ao preparar cache RC15:',error);
+      console.error('Falha ao preparar cache RC16:',error);
     })
   );
 });
