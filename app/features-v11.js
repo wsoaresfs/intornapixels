@@ -1,67 +1,1631 @@
 (()=>{
 'use strict';
-if(!document.querySelector('link[data-intorna-rc11-marketing]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/app/features-v11.css';l.dataset.intornaRc11Marketing='1';document.head.appendChild(l);}
+
+if(!document.querySelector('link[data-intorna-rc11-marketing]')){
+  const l=document.createElement('link');
+  l.rel='stylesheet';
+  l.href='/app/features-v11.css';
+  l.dataset.intornaRc11Marketing='1';
+  document.head.appendChild(l);
+}
+
 const RC='RC11';
 const KEY='intorna_pixels_rc11_marketing_local';
-const money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n||0));
+
+const money=n=>new Intl.NumberFormat('pt-BR',{
+  style:'currency',
+  currency:'BRL'
+}).format(Number(n||0));
+
 const pct=n=>`${Number(n||0).toFixed(1)}%`;
 const n=v=>Number.isFinite(Number(v))?Number(v):0;
-const safe=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const safe=s=>String(s??'').replace(/[&<>"']/g,m=>({
+  '&':'&amp;',
+  '<':'&lt;',
+  '>':'&gt;',
+  '"':'&quot;',
+  "'":'&#39;'
+}[m]));
+
 const today=()=>new Date().toISOString().slice(0,10);
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-let state={period:30,rows:[],connections:[],goal:3000,studioId:null,cloud:false};
-function toast(msg){let el=$('#ip10Toast');if(!el){el=document.createElement('div');el.id='ip10Toast';el.className='ip10-toast';document.body.appendChild(el)}el.textContent=msg;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2600)}
-function resolveClient(){return window.IntornaCloud?.client||window.INTORNA_SUPABASE||window.supabaseClient||window.sb||null}
-function resolveStudio(){return window.INTORNA_CTX?.studioId||window.INTORNA_STUDIO_ID||window.currentStudio?.id||window.APP_STATE?.studio?.id||window.state?.studio?.id||null}
-function localLoad(){try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');state.rows=Array.isArray(d.rows)?d.rows:[];state.goal=n(d.goal)||3000}catch(_){}}
-function localSave(){localStorage.setItem(KEY,JSON.stringify({rows:state.rows,goal:state.goal}))}
-function periodStart(){const d=new Date();d.setDate(d.getDate()-(state.period-1));return d.toISOString().slice(0,10)}
-function filtered(){const start=periodStart();return state.rows.filter(r=>String(r.snapshot_date||r.date)>=start)}
+
+let state={
+  period:30,
+  rows:[],
+  connections:[],
+  goal:3000,
+  studioId:null,
+  cloud:false
+};
+
+function toast(msg){
+  let el=$('#ip10Toast');
+
+  if(!el){
+    el=document.createElement('div');
+    el.id='ip10Toast';
+    el.className='ip10-toast';
+    document.body.appendChild(el);
+  }
+
+  el.textContent=msg;
+  el.classList.add('show');
+
+  clearTimeout(toast.t);
+  toast.t=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+function resolveClient(){
+  return window.IntornaCloud?.client
+    ||window.INTORNA_SUPABASE
+    ||window.supabaseClient
+    ||window.sb
+    ||null;
+}
+
+function resolveStudio(){
+  return window.INTORNA_CTX?.studioId
+    ||window.INTORNA_STUDIO_ID
+    ||window.currentStudio?.id
+    ||window.APP_STATE?.studio?.id
+    ||window.state?.studio?.id
+    ||null;
+}
+
+function localLoad(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY)||'{}');
+
+    state.rows=Array.isArray(d.rows)?d.rows:[];
+    state.goal=n(d.goal)||3000;
+  }catch(_){}
+}
+
+function localSave(){
+  localStorage.setItem(KEY,JSON.stringify({
+    rows:state.rows,
+    goal:state.goal
+  }));
+}
+
+function periodStart(){
+  const d=new Date();
+
+  d.setDate(d.getDate()-(state.period-1));
+
+  return d.toISOString().slice(0,10);
+}
+
+function filtered(){
+  const start=periodStart();
+
+  return state.rows.filter(
+    r=>String(r.snapshot_date||r.date)>=start
+  );
+}
+
 function aggregate(rows=filtered()){
- const a={spend:0,impressions:0,clicks:0,leads:0,conversions:0,revenue:0};
- rows.forEach(r=>{a.spend+=n(r.spend);a.impressions+=n(r.impressions);a.clicks+=n(r.clicks);a.leads+=n(r.leads);a.conversions+=n(r.conversions);a.revenue+=n(r.attributed_revenue??r.revenue)});
- a.ctr=a.impressions?a.clicks/a.impressions*100:0;a.cpc=a.clicks?a.spend/a.clicks:0;a.cpl=a.leads?a.spend/a.leads:0;a.cpa=a.conversions?a.spend/a.conversions:0;a.roas=a.spend?a.revenue/a.spend:0;a.conv=a.leads?a.conversions/a.leads*100:0;return a
+  const a={
+    spend:0,
+    impressions:0,
+    clicks:0,
+    leads:0,
+    conversions:0,
+    revenue:0
+  };
+
+  rows.forEach(r=>{
+    a.spend+=n(r.spend);
+    a.impressions+=n(r.impressions);
+    a.clicks+=n(r.clicks);
+    a.leads+=n(r.leads);
+    a.conversions+=n(r.conversions);
+    a.revenue+=n(r.attributed_revenue??r.revenue);
+  });
+
+  a.ctr=a.impressions
+    ?a.clicks/a.impressions*100
+    :0;
+
+  a.cpc=a.clicks
+    ?a.spend/a.clicks
+    :0;
+
+  a.cpl=a.leads
+    ?a.spend/a.leads
+    :0;
+
+  a.cpa=a.conversions
+    ?a.spend/a.conversions
+    :0;
+
+  a.roas=a.spend
+    ?a.revenue/a.spend
+    :0;
+
+  a.conv=a.leads
+    ?a.conversions/a.leads*100
+    :0;
+
+  return a;
 }
-function channelAgg(provider){return aggregate(filtered().filter(r=>r.provider===provider))}
-function insights(a){const out=[];if(!a.spend)out.push('Cadastre investimento e resultados para começar a leitura automática.');else{if(a.roas>=3)out.push(`ROAS forte em ${a.roas.toFixed(2)}x. Preserve os anúncios vencedores antes de escalar.`);else if(a.roas>0)out.push(`ROAS em ${a.roas.toFixed(2)}x. Revise criativos, oferta e segmentação antes de aumentar orçamento.`);else out.push('Há investimento sem receita atribuída. Verifique rastreamento e etapa de fechamento.');if(a.leads&&a.conv<10)out.push(`Conversão lead → venda em ${a.conv.toFixed(1)}%. O gargalo parece estar no atendimento/fechamento.`);if(a.ctr&&a.ctr<1)out.push(`CTR de ${a.ctr.toFixed(2)}% sugere testar novos ganchos e criativos.`);if(a.cpl>0)out.push(`CPL atual: ${money(a.cpl)}. Compare com o lucro líquido médio por ensaio, não apenas com o ticket.`)}return out}
+
+function channelAgg(provider){
+  return aggregate(
+    filtered().filter(r=>r.provider===provider)
+  );
+}
+
+function insights(a){
+  const out=[];
+
+  if(!a.spend){
+    out.push(
+      'Cadastre investimento e resultados para começar a leitura automática.'
+    );
+  }else{
+
+    if(a.roas>=3){
+      out.push(
+        `ROAS forte em ${a.roas.toFixed(2)}x. Preserve os anúncios vencedores antes de escalar.`
+      );
+    }else if(a.roas>0){
+      out.push(
+        `ROAS em ${a.roas.toFixed(2)}x. Revise criativos, oferta e segmentação antes de aumentar orçamento.`
+      );
+    }else{
+      out.push(
+        'Há investimento sem receita atribuída. Verifique rastreamento e etapa de fechamento.'
+      );
+    }
+
+    if(a.leads&&a.conv<10){
+      out.push(
+        `Conversão lead → venda em ${a.conv.toFixed(1)}%. O gargalo parece estar no atendimento/fechamento.`
+      );
+    }
+
+    if(a.ctr&&a.ctr<1){
+      out.push(
+        `CTR de ${a.ctr.toFixed(2)}% sugere testar novos ganchos e criativos.`
+      );
+    }
+
+    if(a.cpl>0){
+      out.push(
+        `CPL atual: ${money(a.cpl)}. Compare com o lucro líquido médio por ensaio, não apenas com o ticket.`
+      );
+    }
+  }
+
+  return out;
+}
+
 function shell(){
- const host=$('.container')||$('main')||document.body; if($('#ip10Marketing'))return;
- const section=document.createElement('section');section.className='page ip10-page';section.id='ip10Marketing';section.dataset.page='marketing';
- section.innerHTML=`<div class="ip10-wrap"><div class="ip10-hero"><div><div class="ip10-kicker">INTORNÁ PIXELS • ${RC}</div><h2>Marketing Performance</h2><p>Tráfego pago, leads, vendas e retorno em uma leitura única. A RC11 usa snapshots diários e já está preparada para sincronização segura pelo backend.</p></div><div class="ip10-status"><span class="ip10-dot" id="ip10CloudDot"></span><b id="ip10CloudLabel">Modo local</b></div></div>
- <div class="ip10-tabs"><button class="ip10-chip active" data-days="7">7 dias</button><button class="ip10-chip" data-days="30">30 dias</button><button class="ip10-chip" data-days="90">90 dias</button><button class="ip10-btn ghost" id="ip10Sync">↻ Sincronizar anúncios</button></div>
- <div class="ip10-grid"><div class="ip10-card ip10-span3"><div class="ip10-label">Investimento</div><div class="ip10-kpi" id="ip10Spend">R$ 0</div></div><div class="ip10-card ip10-span3"><div class="ip10-label">Leads</div><div class="ip10-kpi" id="ip10Leads">0</div></div><div class="ip10-card ip10-span3"><div class="ip10-label">Vendas atribuídas</div><div class="ip10-kpi" id="ip10Sales">0</div></div><div class="ip10-card ip10-span3"><div class="ip10-label">ROAS</div><div class="ip10-kpi" id="ip10Roas">0,00x</div></div>
- <div class="ip10-card ip10-span8"><div class="ip10-between"><div><div class="ip10-label">Faturamento atribuído</div><div class="ip10-kpi" id="ip10Revenue">R$ 0</div></div><div><div class="ip10-label">Meta mensal</div><div class="ip10-kpi" style="font-size:20px" id="ip10Goal">R$ 3.000</div></div></div><div class="ip10-progress"><span id="ip10GoalBar" style="width:0%"></span></div><div class="ip10-chart" id="ip10Chart"></div></div>
- <div class="ip10-card ip10-span4"><h3 style="margin-top:0">Diagnóstico</h3><div id="ip10Insights"></div></div>
- <div class="ip10-card ip10-span6"><h3 style="margin-top:0">Eficiência do funil</h3><div class="ip10-grid" style="margin-top:0"><div class="ip10-span6"><div class="ip10-label">CTR</div><div class="ip10-kpi" id="ip10Ctr">0%</div></div><div class="ip10-span6"><div class="ip10-label">CPC</div><div class="ip10-kpi" id="ip10Cpc">R$ 0</div></div><div class="ip10-span6"><div class="ip10-label">CPL</div><div class="ip10-kpi" id="ip10Cpl">R$ 0</div></div><div class="ip10-span6"><div class="ip10-label">CPA</div><div class="ip10-kpi" id="ip10Cpa">R$ 0</div></div></div></div>
- <div class="ip10-card ip10-span6"><h3 style="margin-top:0">Canais</h3><div id="ip10Channels"></div></div>
- <div class="ip10-card ip10-span6"><h3 style="margin-top:0">Registrar resultado</h3><form class="ip10-form" id="ip10Form"><label>Canal<select name="provider"><option value="meta">Meta Ads</option><option value="google">Google Ads</option><option value="tiktok">TikTok Ads</option><option value="manual">Outro / Manual</option></select></label><label>Data<input name="snapshot_date" type="date" value="${today()}" required></label><label>Investimento (R$)<input name="spend" type="number" min="0" step="0.01" value="0"></label><label>Impressões<input name="impressions" type="number" min="0" value="0"></label><label>Cliques<input name="clicks" type="number" min="0" value="0"></label><label>Leads<input name="leads" type="number" min="0" value="0"></label><label>Vendas<input name="conversions" type="number" min="0" value="0"></label><label>Receita atribuída (R$)<input name="attributed_revenue" type="number" min="0" step="0.01" value="0"></label><div class="full ip10-row"><button class="ip10-btn primary" type="submit">Salvar resultado</button><button class="ip10-btn ghost" type="button" id="ip10Export">Exportar CSV</button></div></form></div>
- <div class="ip10-card ip10-span6"><h3 style="margin-top:0">Integrações automáticas</h3><div id="ip10Connections"></div><div class="ip10-small" style="margin-top:10px">Credenciais privadas ficam no backend. A tela nunca precisa receber access token de anúncios.</div></div>
- <div class="ip10-card ip10-span12"><div class="ip10-between"><h3 style="margin:0">Histórico diário</h3><button class="ip10-btn ghost" id="ip10GoalEdit">Editar meta</button></div><div class="ip10-table-wrap"><table class="ip10-table"><thead><tr><th>Data</th><th>Canal</th><th>Invest.</th><th>Cliques</th><th>Leads</th><th>Vendas</th><th>Receita</th><th>ROAS</th></tr></thead><tbody id="ip10Rows"></tbody></table></div></div></div></div>`;
- host.appendChild(section);
- const nav=$('.nav')||$('.side-nav')||$('nav');if(nav){const b=document.createElement('button');b.type='button';b.className='ip10-nav-btn';b.dataset.page='marketing';b.innerHTML='<span class="ico">📈</span><span class="label">Marketing</span><span class="ip10-badge">RC11</span>';nav.appendChild(b);b.addEventListener('click',()=>show(section,b))}
- bind();
+
+  const host=$('.container')||$('main')||document.body;
+
+  if($('#ip10Marketing'))return;
+
+  const section=document.createElement('section');
+
+  section.className='page ip10-page';
+  section.id='ip10Marketing';
+  section.dataset.page='marketing';
+
+  section.innerHTML=`
+  <div class="ip10-wrap">
+
+    <div class="ip10-hero">
+
+      <div>
+        <div class="ip10-kicker">
+          INTORNÁ PIXELS • ${RC}
+        </div>
+
+        <h2>Marketing Performance</h2>
+
+        <p>
+          Tráfego pago, leads, vendas e retorno em uma leitura única.
+          A RC11 usa snapshots diários e já está preparada para
+          sincronização segura pelo backend.
+        </p>
+      </div>
+
+      <div class="ip10-status">
+        <span class="ip10-dot" id="ip10CloudDot"></span>
+        <b id="ip10CloudLabel">Modo local</b>
+      </div>
+
+    </div>
+
+    <div class="ip10-tabs">
+
+      <button class="ip10-chip active" data-days="7">
+        7 dias
+      </button>
+
+      <button class="ip10-chip" data-days="30">
+        30 dias
+      </button>
+
+      <button class="ip10-chip" data-days="90">
+        90 dias
+      </button>
+
+      <button class="ip10-btn ghost" id="ip10Sync">
+        ↻ Sincronizar anúncios
+      </button>
+
+    </div>
+
+    <div class="ip10-grid">
+
+      <div class="ip10-card ip10-span3">
+        <div class="ip10-label">
+          Investimento
+        </div>
+
+        <div class="ip10-kpi" id="ip10Spend">
+          R$ 0
+        </div>
+      </div>
+
+      <div class="ip10-card ip10-span3">
+        <div class="ip10-label">
+          Leads
+        </div>
+
+        <div class="ip10-kpi" id="ip10Leads">
+          0
+        </div>
+      </div>
+
+      <div class="ip10-card ip10-span3">
+        <div class="ip10-label">
+          Vendas atribuídas
+        </div>
+
+        <div class="ip10-kpi" id="ip10Sales">
+          0
+        </div>
+      </div>
+
+      <div class="ip10-card ip10-span3">
+        <div class="ip10-label">
+          ROAS
+        </div>
+
+        <div class="ip10-kpi" id="ip10Roas">
+          0,00x
+        </div>
+      </div>
+
+      <div class="ip10-card ip10-span8">
+
+        <div class="ip10-between">
+
+          <div>
+            <div class="ip10-label">
+              Faturamento atribuído
+            </div>
+
+            <div class="ip10-kpi" id="ip10Revenue">
+              R$ 0
+            </div>
+          </div>
+
+          <div>
+
+            <div class="ip10-label">
+              Meta mensal
+            </div>
+
+            <div
+              class="ip10-kpi"
+              style="font-size:20px"
+              id="ip10Goal"
+            >
+              R$ 3.000
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="ip10-progress">
+          <span
+            id="ip10GoalBar"
+            style="width:0%"
+          ></span>
+        </div>
+
+        <div
+          class="ip10-chart"
+          id="ip10Chart"
+        ></div>
+
+      </div>
+
+      <div class="ip10-card ip10-span4">
+
+        <h3 style="margin-top:0">
+          Diagnóstico
+        </h3>
+
+        <div id="ip10Insights"></div>
+
+      </div>
+
+      <div class="ip10-card ip10-span6">
+
+        <h3 style="margin-top:0">
+          Eficiência do funil
+        </h3>
+
+        <div
+          class="ip10-grid"
+          style="margin-top:0"
+        >
+
+          <div class="ip10-span6">
+            <div class="ip10-label">
+              CTR
+            </div>
+
+            <div class="ip10-kpi" id="ip10Ctr">
+              0%
+            </div>
+          </div>
+
+          <div class="ip10-span6">
+            <div class="ip10-label">
+              CPC
+            </div>
+
+            <div class="ip10-kpi" id="ip10Cpc">
+              R$ 0
+            </div>
+          </div>
+
+          <div class="ip10-span6">
+            <div class="ip10-label">
+              CPL
+            </div>
+
+            <div class="ip10-kpi" id="ip10Cpl">
+              R$ 0
+            </div>
+          </div>
+
+          <div class="ip10-span6">
+            <div class="ip10-label">
+              CPA
+            </div>
+
+            <div class="ip10-kpi" id="ip10Cpa">
+              R$ 0
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="ip10-card ip10-span6">
+
+        <h3 style="margin-top:0">
+          Canais
+        </h3>
+
+        <div id="ip10Channels"></div>
+
+      </div>
+
+      <div class="ip10-card ip10-span6">
+
+        <h3 style="margin-top:0">
+          Registrar resultado
+        </h3>
+
+        <form
+          class="ip10-form"
+          id="ip10Form"
+        >
+
+          <label>
+            Canal
+
+            <select name="provider">
+              <option value="meta">
+                Meta Ads
+              </option>
+
+              <option value="google">
+                Google Ads
+              </option>
+
+              <option value="tiktok">
+                TikTok Ads
+              </option>
+
+              <option value="manual">
+                Outro / Manual
+              </option>
+            </select>
+          </label>
+
+          <label>
+            Data
+
+            <input
+              name="snapshot_date"
+              type="date"
+              value="${today()}"
+              required
+            >
+          </label>
+
+          <label>
+            Investimento (R$)
+
+            <input
+              name="spend"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0"
+            >
+          </label>
+
+          <label>
+            Impressões
+
+            <input
+              name="impressions"
+              type="number"
+              min="0"
+              value="0"
+            >
+          </label>
+
+          <label>
+            Cliques
+
+            <input
+              name="clicks"
+              type="number"
+              min="0"
+              value="0"
+            >
+          </label>
+
+          <label>
+            Leads
+
+            <input
+              name="leads"
+              type="number"
+              min="0"
+              value="0"
+            >
+          </label>
+
+          <label>
+            Vendas
+
+            <input
+              name="conversions"
+              type="number"
+              min="0"
+              value="0"
+            >
+          </label>
+
+          <label>
+            Receita atribuída (R$)
+
+            <input
+              name="attributed_revenue"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0"
+            >
+          </label>
+
+          <div class="full ip10-row">
+
+            <button
+              class="ip10-btn primary"
+              type="submit"
+            >
+              Salvar resultado
+            </button>
+
+            <button
+              class="ip10-btn ghost"
+              type="button"
+              id="ip10Export"
+            >
+              Exportar CSV
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+      <div class="ip10-card ip10-span6">
+
+        <h3 style="margin-top:0">
+          Integrações automáticas
+        </h3>
+
+        <div id="ip10Connections"></div>
+
+        <div
+          class="ip10-small"
+          style="margin-top:10px"
+        >
+          Credenciais privadas ficam no backend.
+          A tela nunca precisa receber access token de anúncios.
+        </div>
+
+      </div>
+
+      <div class="ip10-card ip10-span12">
+
+        <div class="ip10-between">
+
+          <h3 style="margin:0">
+            Histórico diário
+          </h3>
+
+          <button
+            class="ip10-btn ghost"
+            id="ip10GoalEdit"
+          >
+            Editar meta
+          </button>
+
+        </div>
+
+        <div class="ip10-table-wrap">
+
+          <table class="ip10-table">
+
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Canal</th>
+                <th>Invest.</th>
+                <th>Cliques</th>
+                <th>Leads</th>
+                <th>Vendas</th>
+                <th>Receita</th>
+                <th>ROAS</th>
+              </tr>
+            </thead>
+
+            <tbody id="ip10Rows"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  `;
+
+  host.appendChild(section);
+
+  const nav=
+    $('.nav')
+    ||$('.side-nav')
+    ||$('nav');
+
+  if(nav){
+
+    const b=document.createElement('button');
+
+    b.type='button';
+    b.className='ip10-nav-btn';
+    b.dataset.page='marketing';
+
+    b.innerHTML=`
+      <span class="ico">📈</span>
+      <span class="label">Marketing</span>
+      <span class="ip10-badge">RC11</span>
+    `;
+
+    nav.appendChild(b);
+
+    b.addEventListener(
+      'click',
+      ()=>show(section,b)
+    );
+  }
+
+  bind();
 }
-function show(section,btn){$$('.page').forEach(x=>x.classList.remove('active'));section.classList.add('active');$$('[data-page]').forEach(x=>x.classList.remove('active'));btn?.classList.add('active');const t=$('#pageTitle');if(t)t.textContent='Marketing Performance'}
-async function cloudLoad(){const client=resolveClient();state.studioId=resolveStudio();if(!client||!state.studioId){state.cloud=false;localLoad();return}
- try{const start=periodStart();const [snap,conn,goal]=await Promise.all([client.from('marketing_snapshots').select('*').eq('studio_id',state.studioId).gte('snapshot_date',start).order('snapshot_date',{ascending:false}),client.from('marketing_connections').select('*').eq('studio_id',state.studioId),client.from('marketing_goals').select('*').eq('studio_id',state.studioId).maybeSingle()]);if(snap.error)throw snap.error;state.rows=snap.data||[];state.connections=conn.data||[];state.goal=n(goal.data?.monthly_revenue_goal)||3000;state.cloud=true}catch(e){console.warn('RC11 cloud fallback',e);state.cloud=false;localLoad()}}
-async function saveRow(row){const client=resolveClient();if(state.cloud&&client&&state.studioId){const payload={...row,studio_id:state.studioId,synced_at:new Date().toISOString(),updated_at:new Date().toISOString()};const {error}=await client.from('marketing_snapshots').upsert(payload,{onConflict:'studio_id,provider,snapshot_date'});if(error)throw error;await cloudLoad()}else{const i=state.rows.findIndex(x=>x.provider===row.provider&&x.snapshot_date===row.snapshot_date);if(i>=0)state.rows[i]={...state.rows[i],...row};else state.rows.unshift({...row,id:crypto.randomUUID?.()||String(Date.now())});localSave()}}
-async function saveGoal(v){state.goal=Math.max(0,n(v));const client=resolveClient();if(state.cloud&&client&&state.studioId){const {error}=await client.from('marketing_goals').upsert({studio_id:state.studioId,monthly_revenue_goal:state.goal,updated_at:new Date().toISOString()});if(error)throw error}else localSave()}
-function render(){const a=aggregate();$('#ip10Spend').textContent=money(a.spend);$('#ip10Leads').textContent=a.leads;$('#ip10Sales').textContent=a.conversions;$('#ip10Roas').textContent=`${a.roas.toFixed(2)}x`;$('#ip10Revenue').textContent=money(a.revenue);$('#ip10Ctr').textContent=pct(a.ctr);$('#ip10Cpc').textContent=money(a.cpc);$('#ip10Cpl').textContent=money(a.cpl);$('#ip10Cpa').textContent=money(a.cpa);$('#ip10Goal').textContent=money(state.goal);$('#ip10GoalBar').style.width=`${Math.min(100,state.goal?a.revenue/state.goal*100:0)}%`;$('#ip10CloudDot').classList.toggle('ok',state.cloud);$('#ip10CloudLabel').textContent=state.cloud?'Supabase conectado':'Modo local';
- const ins=insights(a);$('#ip10Insights').innerHTML=ins.map(x=>`<div class="ip10-insight" style="margin-bottom:9px">${safe(x)}</div>`).join('');
- const labels={meta:'Meta Ads',google:'Google Ads',tiktok:'TikTok Ads',manual:'Manual'};$('#ip10Channels').innerHTML=['meta','google','tiktok'].map(p=>{const x=channelAgg(p);return `<div class="ip10-connect-card"><div class="ip10-channel"><div class="ip10-icon">${p==='meta'?'M':p==='google'?'G':'T'}</div><div><b>${labels[p]}</b><div class="ip10-small">${money(x.spend)} investidos • ${x.leads} leads</div></div></div><div style="text-align:right"><b>${x.roas.toFixed(2)}x</b><div class="ip10-small">ROAS</div></div></div>`}).join('');
- const conns=Object.fromEntries(state.connections.map(c=>[c.provider,c]));$('#ip10Connections').innerHTML=['meta','google','tiktok'].map(p=>{const c=conns[p];const ready=c?.status==='ready';return `<div class="ip10-connect-card"><div><b>${labels[p]}</b><div class="ip10-small">${ready?`Última sincronização: ${c.last_sync_at?new Date(c.last_sync_at).toLocaleString('pt-BR'):'—'}`:'Aguardando configuração segura'}</div></div><span class="${ready?'ip10-good':'ip10-warn'}"><b>${ready?'Conectado':'Pendente'}</b></span></div>`}).join('');
- const rows=[...filtered()].sort((a,b)=>String(b.snapshot_date).localeCompare(String(a.snapshot_date)));$('#ip10Rows').innerHTML=rows.length?rows.map(r=>{const roas=n(r.spend)?n(r.attributed_revenue)/n(r.spend):0;return `<tr><td>${safe(r.snapshot_date)}</td><td>${safe(labels[r.provider]||r.provider)}</td><td>${money(r.spend)}</td><td>${n(r.clicks)}</td><td>${n(r.leads)}</td><td>${n(r.conversions)}</td><td>${money(r.attributed_revenue)}</td><td><b>${roas.toFixed(2)}x</b></td></tr>`}).join(''):`<tr><td colspan="8"><div class="ip10-empty">Nenhum dado neste período.</div></td></tr>`;
- renderChart(rows)}
-function renderChart(rows){const box=$('#ip10Chart');const by={};rows.forEach(r=>{by[r.snapshot_date]=(by[r.snapshot_date]||0)+n(r.attributed_revenue)});const dates=Object.keys(by).sort().slice(-14);const max=Math.max(1,...dates.map(d=>by[d]));box.innerHTML=dates.length?dates.map(d=>`<div class="ip10-bar" title="${d}: ${money(by[d])}" style="height:${Math.max(4,by[d]/max*100)}%"><span>${d.slice(5)}</span></div>`).join(''):'<div class="ip10-empty" style="width:100%;align-self:stretch">O gráfico aparecerá quando houver receita registrada.</div>'}
-async function sync(){const client=resolveClient();if(!client||!state.studioId){toast('A sincronização automática precisa do app autenticado no Supabase.');return}if(!window.INTORNA_CTX?.isAdmin){toast('A sincronização automática das contas de anúncios é gerenciada pelo Master nesta RC.');return}try{toast('Solicitando sincronização…');const {data,error}=await client.functions.invoke('marketing-sync',{body:{action:'sync_all',studioId:state.studioId,days:state.period}});if(error)throw error;if(data?.error)throw new Error(data.error);await cloudLoad();render();const errs=data?.result?.errors||[];toast(errs.length?'Sincronização parcial: configure as credenciais pendentes.':'Sincronização concluída.')}catch(e){console.error(e);toast(e.message||'Não foi possível sincronizar.') }}
-function exportCsv(){const labels=['snapshot_date','provider','spend','impressions','clicks','leads','conversions','attributed_revenue'];const lines=[labels.join(';'),...filtered().map(r=>labels.map(k=>String(r[k]??'').replace(/;/g,',')).join(';'))];const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`intorna-marketing-${today()}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+
+
+/* =========================================
+   CORREÇÃO RC11
+   ========================================= */
+
+function show(section,btn){
+
+  $$('.page').forEach(
+    x=>x.classList.remove('active')
+  );
+
+  section.classList.add('active');
+
+  /*
+   * IMPORTANTE:
+   * Remove active somente dos botões da navegação.
+   * Antes a própria section de Marketing também
+   * perdia a classe active e a tela ficava branca.
+   */
+  $$('.nav button[data-page]').forEach(
+    x=>x.classList.remove('active')
+  );
+
+  btn?.classList.add('active');
+
+  const t=$('#pageTitle');
+
+  if(t){
+    t.textContent='Marketing Performance';
+  }
+
+  document
+    .getElementById('sidebar')
+    ?.classList.remove('open');
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+}
+
+
+/* =========================================
+   SUPABASE / CLOUD
+   ========================================= */
+
+async function cloudLoad(){
+
+  const client=resolveClient();
+
+  state.studioId=resolveStudio();
+
+  if(!client||!state.studioId){
+
+    state.cloud=false;
+
+    localLoad();
+
+    return;
+  }
+
+  try{
+
+    const start=periodStart();
+
+    const [
+      snap,
+      conn,
+      goal
+    ]=await Promise.all([
+
+      client
+        .from('marketing_snapshots')
+        .select('*')
+        .eq('studio_id',state.studioId)
+        .gte('snapshot_date',start)
+        .order('snapshot_date',{
+          ascending:false
+        }),
+
+      client
+        .from('marketing_connections')
+        .select('*')
+        .eq('studio_id',state.studioId),
+
+      client
+        .from('marketing_goals')
+        .select('*')
+        .eq('studio_id',state.studioId)
+        .maybeSingle()
+
+    ]);
+
+    if(snap.error){
+      throw snap.error;
+    }
+
+    state.rows=snap.data||[];
+    state.connections=conn.data||[];
+
+    state.goal=
+      n(goal.data?.monthly_revenue_goal)
+      ||3000;
+
+    state.cloud=true;
+
+  }catch(e){
+
+    console.warn(
+      'RC11 cloud fallback',
+      e
+    );
+
+    state.cloud=false;
+
+    localLoad();
+  }
+}
+
+
+/* =========================================
+   SALVAR RESULTADOS
+   ========================================= */
+
+async function saveRow(row){
+
+  const client=resolveClient();
+
+  if(
+    state.cloud
+    &&client
+    &&state.studioId
+  ){
+
+    const payload={
+      ...row,
+      studio_id:state.studioId,
+      synced_at:new Date().toISOString(),
+      updated_at:new Date().toISOString()
+    };
+
+    const {error}=await client
+      .from('marketing_snapshots')
+      .upsert(
+        payload,
+        {
+          onConflict:
+            'studio_id,provider,snapshot_date'
+        }
+      );
+
+    if(error){
+      throw error;
+    }
+
+    await cloudLoad();
+
+  }else{
+
+    const i=state.rows.findIndex(
+      x=>
+        x.provider===row.provider
+        &&
+        x.snapshot_date===row.snapshot_date
+    );
+
+    if(i>=0){
+
+      state.rows[i]={
+        ...state.rows[i],
+        ...row
+      };
+
+    }else{
+
+      state.rows.unshift({
+        ...row,
+        id:
+          crypto.randomUUID?.()
+          ||String(Date.now())
+      });
+    }
+
+    localSave();
+  }
+}
+
+
+/* =========================================
+   META
+   ========================================= */
+
+async function saveGoal(v){
+
+  state.goal=Math.max(0,n(v));
+
+  const client=resolveClient();
+
+  if(
+    state.cloud
+    &&client
+    &&state.studioId
+  ){
+
+    const {error}=await client
+      .from('marketing_goals')
+      .upsert({
+        studio_id:state.studioId,
+        monthly_revenue_goal:state.goal,
+        updated_at:new Date().toISOString()
+      });
+
+    if(error){
+      throw error;
+    }
+
+  }else{
+
+    localSave();
+  }
+}
+
+
+/* =========================================
+   RENDER
+   ========================================= */
+
+function render(){
+
+  const a=aggregate();
+
+  $('#ip10Spend').textContent=
+    money(a.spend);
+
+  $('#ip10Leads').textContent=
+    a.leads;
+
+  $('#ip10Sales').textContent=
+    a.conversions;
+
+  $('#ip10Roas').textContent=
+    `${a.roas.toFixed(2)}x`;
+
+  $('#ip10Revenue').textContent=
+    money(a.revenue);
+
+  $('#ip10Ctr').textContent=
+    pct(a.ctr);
+
+  $('#ip10Cpc').textContent=
+    money(a.cpc);
+
+  $('#ip10Cpl').textContent=
+    money(a.cpl);
+
+  $('#ip10Cpa').textContent=
+    money(a.cpa);
+
+  $('#ip10Goal').textContent=
+    money(state.goal);
+
+  $('#ip10GoalBar').style.width=
+    `${
+      Math.min(
+        100,
+        state.goal
+          ?a.revenue/state.goal*100
+          :0
+      )
+    }%`;
+
+  $('#ip10CloudDot')
+    .classList
+    .toggle(
+      'ok',
+      state.cloud
+    );
+
+  $('#ip10CloudLabel').textContent=
+    state.cloud
+      ?'Supabase conectado'
+      :'Modo local';
+
+
+  /* DIAGNÓSTICO */
+
+  const ins=insights(a);
+
+  $('#ip10Insights').innerHTML=
+    ins.map(
+      x=>`
+        <div
+          class="ip10-insight"
+          style="margin-bottom:9px"
+        >
+          ${safe(x)}
+        </div>
+      `
+    ).join('');
+
+
+  /* CANAIS */
+
+  const labels={
+    meta:'Meta Ads',
+    google:'Google Ads',
+    tiktok:'TikTok Ads',
+    manual:'Manual'
+  };
+
+  $('#ip10Channels').innerHTML=
+    ['meta','google','tiktok']
+    .map(p=>{
+
+      const x=channelAgg(p);
+
+      return `
+        <div class="ip10-connect-card">
+
+          <div class="ip10-channel">
+
+            <div class="ip10-icon">
+              ${
+                p==='meta'
+                  ?'M'
+                  :p==='google'
+                    ?'G'
+                    :'T'
+              }
+            </div>
+
+            <div>
+
+              <b>
+                ${labels[p]}
+              </b>
+
+              <div class="ip10-small">
+                ${money(x.spend)}
+                investidos •
+                ${x.leads}
+                leads
+              </div>
+
+            </div>
+
+          </div>
+
+          <div style="text-align:right">
+
+            <b>
+              ${x.roas.toFixed(2)}x
+            </b>
+
+            <div class="ip10-small">
+              ROAS
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    })
+    .join('');
+
+
+  /* CONEXÕES */
+
+  const conns=Object.fromEntries(
+    state.connections.map(
+      c=>[c.provider,c]
+    )
+  );
+
+  $('#ip10Connections').innerHTML=
+    ['meta','google','tiktok']
+    .map(p=>{
+
+      const c=conns[p];
+
+      const ready=
+        c?.status==='ready';
+
+      return `
+        <div class="ip10-connect-card">
+
+          <div>
+
+            <b>
+              ${labels[p]}
+            </b>
+
+            <div class="ip10-small">
+
+              ${
+                ready
+                  ?`
+                    Última sincronização:
+                    ${
+                      c.last_sync_at
+                        ?new Date(
+                          c.last_sync_at
+                        ).toLocaleString(
+                          'pt-BR'
+                        )
+                        :'—'
+                    }
+                  `
+                  :'Aguardando configuração segura'
+              }
+
+            </div>
+
+          </div>
+
+          <span
+            class="${
+              ready
+                ?'ip10-good'
+                :'ip10-warn'
+            }"
+          >
+            <b>
+              ${
+                ready
+                  ?'Conectado'
+                  :'Pendente'
+              }
+            </b>
+          </span>
+
+        </div>
+      `;
+    })
+    .join('');
+
+
+  /* HISTÓRICO */
+
+  const rows=[
+    ...filtered()
+  ].sort(
+    (a,b)=>
+      String(
+        b.snapshot_date
+      ).localeCompare(
+        String(
+          a.snapshot_date
+        )
+      )
+  );
+
+  $('#ip10Rows').innerHTML=
+    rows.length
+      ?rows.map(r=>{
+
+        const roas=
+          n(r.spend)
+            ?n(
+              r.attributed_revenue
+            )/n(r.spend)
+            :0;
+
+        return `
+          <tr>
+
+            <td>
+              ${safe(r.snapshot_date)}
+            </td>
+
+            <td>
+              ${
+                safe(
+                  labels[r.provider]
+                  ||r.provider
+                )
+              }
+            </td>
+
+            <td>
+              ${money(r.spend)}
+            </td>
+
+            <td>
+              ${n(r.clicks)}
+            </td>
+
+            <td>
+              ${n(r.leads)}
+            </td>
+
+            <td>
+              ${n(r.conversions)}
+            </td>
+
+            <td>
+              ${money(
+                r.attributed_revenue
+              )}
+            </td>
+
+            <td>
+              <b>
+                ${roas.toFixed(2)}x
+              </b>
+            </td>
+
+          </tr>
+        `;
+      })
+      .join('')
+      :`
+        <tr>
+          <td colspan="8">
+            <div class="ip10-empty">
+              Nenhum dado neste período.
+            </div>
+          </td>
+        </tr>
+      `;
+
+  renderChart(rows);
+}
+
+
+/* =========================================
+   GRÁFICO
+   ========================================= */
+
+function renderChart(rows){
+
+  const box=$('#ip10Chart');
+
+  const by={};
+
+  rows.forEach(r=>{
+
+    by[r.snapshot_date]=
+      (by[r.snapshot_date]||0)
+      +n(r.attributed_revenue);
+  });
+
+  const dates=
+    Object
+      .keys(by)
+      .sort()
+      .slice(-14);
+
+  const max=
+    Math.max(
+      1,
+      ...dates.map(
+        d=>by[d]
+      )
+    );
+
+  box.innerHTML=
+    dates.length
+      ?dates.map(d=>`
+        <div
+          class="ip10-bar"
+          title="${d}: ${money(by[d])}"
+          style="height:${
+            Math.max(
+              4,
+              by[d]/max*100
+            )
+          }%"
+        >
+          <span>
+            ${d.slice(5)}
+          </span>
+        </div>
+      `).join('')
+      :`
+        <div
+          class="ip10-empty"
+          style="
+            width:100%;
+            align-self:stretch
+          "
+        >
+          O gráfico aparecerá quando
+          houver receita registrada.
+        </div>
+      `;
+}
+
+
+/* =========================================
+   SINCRONIZAR ANÚNCIOS
+   ========================================= */
+
+async function sync(){
+
+  const client=resolveClient();
+
+  if(
+    !client
+    ||!state.studioId
+  ){
+
+    toast(
+      'A sincronização automática precisa do app autenticado no Supabase.'
+    );
+
+    return;
+  }
+
+  if(
+    !window.INTORNA_CTX?.isAdmin
+  ){
+
+    toast(
+      'A sincronização automática das contas de anúncios é gerenciada pelo Master nesta RC.'
+    );
+
+    return;
+  }
+
+  try{
+
+    toast(
+      'Solicitando sincronização…'
+    );
+
+    const {
+      data,
+      error
+    }=await client
+      .functions
+      .invoke(
+        'marketing-sync',
+        {
+          body:{
+            action:'sync_all',
+            studioId:state.studioId,
+            days:state.period
+          }
+        }
+      );
+
+    if(error){
+      throw error;
+    }
+
+    if(data?.error){
+      throw new Error(
+        data.error
+      );
+    }
+
+    await cloudLoad();
+
+    render();
+
+    const errs=
+      data?.result?.errors
+      ||[];
+
+    toast(
+      errs.length
+        ?'Sincronização parcial: configure as credenciais pendentes.'
+        :'Sincronização concluída.'
+    );
+
+  }catch(e){
+
+    console.error(e);
+
+    toast(
+      e.message
+      ||'Não foi possível sincronizar.'
+    );
+  }
+}
+
+
+/* =========================================
+   CSV
+   ========================================= */
+
+function exportCsv(){
+
+  const labels=[
+    'snapshot_date',
+    'provider',
+    'spend',
+    'impressions',
+    'clicks',
+    'leads',
+    'conversions',
+    'attributed_revenue'
+  ];
+
+  const lines=[
+    labels.join(';'),
+
+    ...filtered().map(
+      r=>
+        labels
+        .map(
+          k=>
+            String(
+              r[k]??''
+            ).replace(
+              /;/g,
+              ','
+            )
+        )
+        .join(';')
+    )
+  ];
+
+  const blob=
+    new Blob(
+      [
+        lines.join('\n')
+      ],
+      {
+        type:'text/csv;charset=utf-8'
+      }
+    );
+
+  const a=
+    document.createElement('a');
+
+  a.href=
+    URL.createObjectURL(blob);
+
+  a.download=
+    `intorna-marketing-${today()}.csv`;
+
+  a.click();
+
+  setTimeout(
+    ()=>URL.revokeObjectURL(
+      a.href
+    ),
+    500
+  );
+}
+
+
+/* =========================================
+   EVENTOS
+   ========================================= */
+
 function bind(){
- $$('.ip10-chip').forEach(b=>b.addEventListener('click',async()=>{$$('.ip10-chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.period=n(b.dataset.days)||30;await cloudLoad();render()}));
- $('#ip10Sync').addEventListener('click',sync);$('#ip10Export').addEventListener('click',exportCsv);
- $('#ip10Form').addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.currentTarget);const row={provider:fd.get('provider'),snapshot_date:fd.get('snapshot_date'),spend:n(fd.get('spend')),impressions:n(fd.get('impressions')),clicks:n(fd.get('clicks')),leads:n(fd.get('leads')),conversions:n(fd.get('conversions')),attributed_revenue:n(fd.get('attributed_revenue')),currency:'BRL'};try{await saveRow(row);render();toast('Resultado salvo.')}catch(err){console.error(err);toast(err.message||'Erro ao salvar.')}});
- $('#ip10GoalEdit').addEventListener('click',async()=>{const v=prompt('Meta de faturamento mensal (R$):',String(state.goal));if(v===null)return;try{await saveGoal(v);render();toast('Meta atualizada.')}catch(e){toast(e.message||'Erro ao salvar meta.')}})
+
+  $$('.ip10-chip')
+    .forEach(
+      b=>b.addEventListener(
+        'click',
+        async()=>{
+
+          $$('.ip10-chip')
+            .forEach(
+              x=>
+                x.classList
+                .remove('active')
+            );
+
+          b.classList
+            .add('active');
+
+          state.period=
+            n(b.dataset.days)
+            ||30;
+
+          await cloudLoad();
+
+          render();
+        }
+      )
+    );
+
+
+  $('#ip10Sync')
+    .addEventListener(
+      'click',
+      sync
+    );
+
+
+  $('#ip10Export')
+    .addEventListener(
+      'click',
+      exportCsv
+    );
+
+
+  $('#ip10Form')
+    .addEventListener(
+      'submit',
+      async e=>{
+
+        e.preventDefault();
+
+        const fd=
+          new FormData(
+            e.currentTarget
+          );
+
+        const row={
+
+          provider:
+            fd.get('provider'),
+
+          snapshot_date:
+            fd.get(
+              'snapshot_date'
+            ),
+
+          spend:
+            n(
+              fd.get(
+                'spend'
+              )
+            ),
+
+          impressions:
+            n(
+              fd.get(
+                'impressions'
+              )
+            ),
+
+          clicks:
+            n(
+              fd.get(
+                'clicks'
+              )
+            ),
+
+          leads:
+            n(
+              fd.get(
+                'leads'
+              )
+            ),
+
+          conversions:
+            n(
+              fd.get(
+                'conversions'
+              )
+            ),
+
+          attributed_revenue:
+            n(
+              fd.get(
+                'attributed_revenue'
+              )
+            ),
+
+          currency:'BRL'
+        };
+
+        try{
+
+          await saveRow(row);
+
+          render();
+
+          toast(
+            'Resultado salvo.'
+          );
+
+        }catch(err){
+
+          console.error(err);
+
+          toast(
+            err.message
+            ||'Erro ao salvar.'
+          );
+        }
+      }
+    );
+
+
+  $('#ip10GoalEdit')
+    .addEventListener(
+      'click',
+      async()=>{
+
+        const v=
+          prompt(
+            'Meta de faturamento mensal (R$):',
+            String(state.goal)
+          );
+
+        if(v===null){
+          return;
+        }
+
+        try{
+
+          await saveGoal(v);
+
+          render();
+
+          toast(
+            'Meta atualizada.'
+          );
+
+        }catch(e){
+
+          toast(
+            e.message
+            ||'Erro ao salvar meta.'
+          );
+        }
+      }
+    );
 }
-async function start(){shell();await cloudLoad();render();window.IntornaRC11={reload:async()=>{await cloudLoad();render()},state:()=>structuredClone(state)}}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+
+
+/* =========================================
+   INICIALIZAÇÃO
+   ========================================= */
+
+async function start(){
+
+  shell();
+
+  await cloudLoad();
+
+  render();
+
+  window.IntornaRC11={
+
+    reload:async()=>{
+
+      await cloudLoad();
+
+      render();
+    },
+
+    state:()=>{
+
+      try{
+        return structuredClone(
+          state
+        );
+      }catch(_){
+        return JSON.parse(
+          JSON.stringify(
+            state
+          )
+        );
+      }
+    }
+  };
+}
+
+
+if(
+  document.readyState==='loading'
+){
+
+  document.addEventListener(
+    'DOMContentLoaded',
+    start
+  );
+
+}else{
+
+  start();
+}
+
 })();
