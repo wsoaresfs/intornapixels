@@ -804,3 +804,16 @@ setTimeout(()=>clearInterval(boot),20000);
 window.addEventListener('beforeunload',()=>{if(timer)clearInterval(timer)});
 
 })();
+
+
+/* =========================================================
+   RC17 — WAHA + CENTRAL INTELIGENTE DE VENDAS
+   ========================================================= */
+(()=>{
+  if(document.querySelector('script[data-intorna-v17-waha]')) return;
+  const s=document.createElement('script');
+  s.src='features-v17.js';
+  s.async=false;
+  s.dataset.intornaV17Waha='1';
+  document.body.appendChild(s);
+})();
