@@ -117,3 +117,17 @@ function install(){
 const timer=setInterval(()=>{install();if(installed)clearInterval(timer)},300);
 setTimeout(()=>clearInterval(timer),15000);
 })();
+
+
+/* =========================================================
+   RC13 — MOTOR DE VENDAS
+   Carregamento incremental sem alterar o bootstrap.
+   ========================================================= */
+(()=>{
+  if(document.querySelector('script[data-intorna-v13]')) return;
+  const s=document.createElement('script');
+  s.src='features-v13.js';
+  s.async=false;
+  s.dataset.intornaV13='1';
+  document.body.appendChild(s);
+})();
