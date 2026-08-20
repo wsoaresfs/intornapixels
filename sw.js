@@ -1,4 +1,4 @@
-const CACHE = 'intorna-pixels-rc12-trafego-real';
+const CACHE = 'intorna-pixels-rc15-maquina-vendas';
 
 const CORE = [
   '/',
@@ -21,7 +21,9 @@ const CORE = [
   '/app/features-v7.js',
   '/app/features-v11.js',
   '/app/features-v12.js',
-
+  '/app/features-v13.js',
+  '/app/features-v14.js',
+  '/app/features-v15.js',
   '/app/features-waha-test.js',
 
   '/app/styles.css',
@@ -47,252 +49,72 @@ const CORE = [
   '/manifest.webmanifest'
 ];
 
-
-/* =========================================================
-   INSTALAÇÃO
-   ========================================================= */
-
-self.addEventListener('install', event => {
-
+self.addEventListener('install',event=>{
   self.skipWaiting();
-
   event.waitUntil(
-    caches
-      .open(CACHE)
-      .then(cache => cache.addAll(CORE))
-      .catch(error => {
-        console.error(
-          'Falha ao preparar cache RC12:',
-          error
-        );
-      })
+    caches.open(CACHE).then(cache=>cache.addAll(CORE)).catch(error=>{
+      console.error('Falha ao preparar cache RC15:',error);
+    })
   );
 });
 
-
-/* =========================================================
-   ATIVAÇÃO
-   Remove caches antigos automaticamente
-   ========================================================= */
-
-self.addEventListener('activate', event => {
-
-  event.waitUntil(
-
-    Promise.all([
-
-      self.clients.claim(),
-
-      caches.keys().then(keys =>
-
-        Promise.all(
-
-          keys
-
-            .filter(
-              key => key !== CACHE
-            )
-
-            .map(
-              key => caches.delete(key)
-            )
-        )
-      )
-    ])
-  );
+self.addEventListener('activate',event=>{
+  event.waitUntil(Promise.all([
+    self.clients.claim(),
+    caches.keys().then(keys=>Promise.all(
+      keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))
+    ))
+  ]));
 });
 
-
-/* =========================================================
-   NETWORK FIRST
-   HTML / JS / CSS
-   Evita RC antiga presa no navegador
-   ========================================================= */
-
-async function networkFirst(request) {
-
-  try {
-
-    const response =
-      await fetch(
-        request,
-        {
-          cache:'no-store'
-        }
-      );
-
-    if(response && response.ok){
-
-      const copy =
-        response.clone();
-
-      caches
-        .open(CACHE)
-        .then(
-          cache =>
-            cache.put(
-              request,
-              copy
-            )
-        )
-        .catch(()=>{});
+async function networkFirst(request){
+  try{
+    const response=await fetch(request,{cache:'no-store'});
+    if(response&&response.ok){
+      const copy=response.clone();
+      caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{});
     }
-
     return response;
-
-  } catch(error) {
-
-    const cached =
-      await caches.match(
-        request
-      );
-
-    if(cached){
-      return cached;
-    }
-
+  }catch(error){
+    const cached=await caches.match(request);
+    if(cached)return cached;
     throw error;
   }
 }
 
-
-/* =========================================================
-   CACHE FIRST
-   Imagens e arquivos estáticos
-   ========================================================= */
-
-async function cacheFirst(request) {
-
-  const cached =
-    await caches.match(
-      request
-    );
-
-  if(cached){
-    return cached;
+async function cacheFirst(request){
+  const cached=await caches.match(request);
+  if(cached)return cached;
+  const response=await fetch(request);
+  if(response&&response.ok){
+    const copy=response.clone();
+    caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{});
   }
-
-  try {
-
-    const response =
-      await fetch(request);
-
-    if(response && response.ok){
-
-      const copy =
-        response.clone();
-
-      caches
-        .open(CACHE)
-        .then(
-          cache =>
-            cache.put(
-              request,
-              copy
-            )
-        )
-        .catch(()=>{});
-    }
-
-    return response;
-
-  } catch(error) {
-
-    throw error;
-  }
+  return response;
 }
 
+self.addEventListener('fetch',event=>{
+  if(event.request.method!=='GET')return;
+  const url=new URL(event.request.url);
+  if(url.origin!==self.location.origin)return;
 
-/* =========================================================
-   FETCH
-   ========================================================= */
-
-self.addEventListener('fetch', event => {
-
-  if(
-    event.request.method !== 'GET'
-  ){
+  if(event.request.mode==='navigate'){
+    event.respondWith(networkFirst(event.request).catch(async()=>{
+      return (await caches.match(event.request))||(await caches.match('/portal/'));
+    }));
     return;
   }
 
-  const url =
-    new URL(
-      event.request.url
-    );
-
   if(
-    url.origin !==
-    self.location.origin
-  ){
-    return;
-  }
-
-
-  /*
-   * Navegação sempre tenta internet primeiro.
-   */
-  if(
-    event.request.mode === 'navigate'
-  ){
-
-    event.respondWith(
-
-      networkFirst(
-        event.request
-      ).catch(
-        async()=>{
-
-          return (
-            await caches.match(
-              event.request
-            )
-          )
-          ||
-          (
-            await caches.match(
-              '/portal/'
-            )
-          );
-        }
-      )
-    );
-
-    return;
-  }
-
-
-  /*
-   * JS e CSS sempre tentam pegar a versão nova.
-   */
-  if(
-    url.pathname.endsWith('.js')
-    ||
-    url.pathname.endsWith('.css')
-    ||
-    url.pathname.endsWith('.html')
-    ||
-    url.pathname.endsWith('.json')
-    ||
+    url.pathname.endsWith('.js')||
+    url.pathname.endsWith('.css')||
+    url.pathname.endsWith('.html')||
+    url.pathname.endsWith('.json')||
     url.pathname.endsWith('.webmanifest')
   ){
-
-    event.respondWith(
-      networkFirst(
-        event.request
-      )
-    );
-
+    event.respondWith(networkFirst(event.request));
     return;
   }
 
-
-  /*
-   * Imagens, SVG e demais arquivos estáticos
-   * podem usar cache primeiro.
-   */
-  event.respondWith(
-    cacheFirst(
-      event.request
-    )
-  );
+  event.respondWith(cacheFirst(event.request));
 });
