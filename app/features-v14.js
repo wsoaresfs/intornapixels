@@ -30,13 +30,50 @@ function toast(msg){
   toast.t=setTimeout(()=>el.classList.remove('show'),2500);
 }
 
+async function freshSession(db){
+  let {data,error}=await db.auth.getSession();
+  if(error)throw error;
+  let session=data?.session||null;
+  if(!session)throw new Error('Sua sessão expirou. Entre novamente no Intorná Pixels.');
+
+  const expiresAt=Number(session.expires_at||0)*1000;
+  if(!expiresAt || expiresAt-Date.now()<120000){
+    const r=await db.auth.refreshSession();
+    if(r.error)throw r.error;
+    session=r.data?.session||null;
+    if(!session)throw new Error('Não foi possível renovar sua sessão. Entre novamente.');
+  }
+  return session;
+}
+
 async function invoke(action,extra={}){
   const db=client(),sid=studioId();
   if(!db||!sid)throw new Error('Sessão do estúdio não encontrada.');
-  const {data,error}=await db.functions.invoke('sales-assistant',{body:{action,studioId:sid,...extra}});
-  if(error)throw error;
-  if(data?.error)throw new Error(data.error);
-  return data;
+
+  await freshSession(db);
+
+  let call=await db.functions.invoke('sales-assistant',{
+    body:{action,studioId:sid,...extra}
+  });
+
+  const is401=call.error && (
+    call.error?.context?.status===401 ||
+    /401|jwt|expired|unauthorized/i.test(String(call.error?.message||call.error))
+  );
+
+  if(is401){
+    const r=await db.auth.refreshSession();
+    if(r.error||!r.data?.session){
+      throw new Error('Sua sessão expirou. Entre novamente no Intorná Pixels.');
+    }
+    call=await db.functions.invoke('sales-assistant',{
+      body:{action,studioId:sid,...extra}
+    });
+  }
+
+  if(call.error)throw call.error;
+  if(call.data?.error)throw new Error(call.data.error);
+  return call.data;
 }
 
 function styles(){
@@ -408,4 +445,17 @@ const boot=setInterval(()=>{
 setTimeout(()=>clearInterval(boot),20000);
 window.addEventListener('beforeunload',()=>{if(timer)clearInterval(timer)});
 
+})();
+
+
+/* =========================================================
+   RC15 — MÁQUINA AUTOMÁTICA DE VENDAS
+   ========================================================= */
+(()=>{
+  if(document.querySelector('script[data-intorna-v15]')) return;
+  const s=document.createElement('script');
+  s.src='features-v15.js';
+  s.async=false;
+  s.dataset.intornaV15='1';
+  document.body.appendChild(s);
 })();

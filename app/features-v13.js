@@ -82,6 +82,22 @@ function messageFor(o){
   return `Olá, ${first}! 😊 Posso te ajudar a avançar com seu ensaio?`;
 }
 
+async function freshSession(client){
+  let {data,error}=await client.auth.getSession();
+  if(error)throw error;
+  let session=data?.session||null;
+  if(!session)throw new Error('Sua sessão expirou. Entre novamente no Intorná Pixels.');
+
+  const expiresAt=Number(session.expires_at||0)*1000;
+  if(!expiresAt || expiresAt-Date.now()<120000){
+    const r=await client.auth.refreshSession();
+    if(r.error)throw r.error;
+    session=r.data?.session||null;
+    if(!session)throw new Error('Não foi possível renovar sua sessão. Entre novamente.');
+  }
+  return session;
+}
+
 async function invoke(action='radar',extra={}){
   const client=db();
   const sid=studioId();
@@ -90,13 +106,30 @@ async function invoke(action='radar',extra={}){
     throw new Error('Sessão do estúdio não encontrada.');
   }
 
-  const {data:result,error}=await client.functions.invoke('sales-radar',{
+  await freshSession(client);
+
+  let call=await client.functions.invoke('sales-radar',{
     body:{action,studioId:sid,...extra}
   });
 
-  if(error)throw error;
-  if(result?.error)throw new Error(result.error);
-  return result;
+  const is401=call.error && (
+    call.error?.context?.status===401 ||
+    /401|jwt|expired|unauthorized/i.test(String(call.error?.message||call.error))
+  );
+
+  if(is401){
+    const r=await client.auth.refreshSession();
+    if(r.error||!r.data?.session){
+      throw new Error('Sua sessão expirou. Entre novamente no Intorná Pixels.');
+    }
+    call=await client.functions.invoke('sales-radar',{
+      body:{action,studioId:sid,...extra}
+    });
+  }
+
+  if(call.error)throw call.error;
+  if(call.data?.error)throw new Error(call.data.error);
+  return call.data;
 }
 
 function styles(){
