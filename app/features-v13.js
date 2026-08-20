@@ -532,3 +532,16 @@ window.addEventListener('beforeunload',()=>{
 });
 
 })();
+
+
+/* =========================================================
+   RC14 — PILOTO AUTOMÁTICO DE VENDAS
+   ========================================================= */
+(()=>{
+  if(document.querySelector('script[data-intorna-v14]')) return;
+  const s=document.createElement('script');
+  s.src='features-v14.js';
+  s.async=false;
+  s.dataset.intornaV14='1';
+  document.body.appendChild(s);
+})();
