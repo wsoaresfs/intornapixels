@@ -1,4 +1,4 @@
-const CACHE = 'intorna-pixels-rc18-master-dual';
+const CACHE = 'intorna-pixels-rc19-realtime-hardened-final';
 
 const CORE = [
   '/',
@@ -18,16 +18,12 @@ const CORE = [
   '/app/features-v11.js',
   '/app/features-v12.js',
   '/app/features-v13.js',
-  '/app/features-v14.js',
-  '/app/features-v15.js',
-  '/app/features-v16.js',
-  '/app/features-v17.js',
+  '/app/features-v19.js',
   '/app/features-waha-test.js',
   '/app/styles.css',
   '/app/styles-v6.css',
   '/app/styles-v7.css',
   '/app/features-v11.css',
-  '/app/styles-waha-test.css',
   '/cliente/',
   '/cliente/index.html',
   '/cliente/portal.js',
@@ -36,75 +32,84 @@ const CORE = [
   '/shared/cloud.js',
   '/shared/platform.js',
   '/shared/tenant-bridge.js',
-  '/shared/rc18-master.js',
-  '/shared/rc18-studio.js',
+  '/shared/rc19-master.js',
+  '/shared/rc19-studio.js',
   '/assets/logo.svg',
   '/assets/icon.svg',
   '/assets/logo-horizontal.png',
   '/manifest.webmanifest'
 ];
 
-self.addEventListener('install',event=>{
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE).then(cache=>cache.addAll(CORE)).catch(error=>{
-      console.error('Falha ao preparar cache RC18 Master Dual:',error);
+async function warmCache(){
+  const cache = await caches.open(CACHE);
+  const results = await Promise.allSettled(
+    CORE.map(async path => {
+      const response = await fetch(path, {cache:'reload'});
+      if(!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+      await cache.put(path, response);
     })
   );
+  const failed = results.filter(x => x.status === 'rejected');
+  if(failed.length) console.warn(`RC19: ${failed.length} recurso(s) não entraram no cache inicial.`);
+}
+
+self.addEventListener('install', event => {
+  self.skipWaiting();
+  event.waitUntil(warmCache());
 });
 
-self.addEventListener('activate',event=>{
+self.addEventListener('activate', event => {
   event.waitUntil(Promise.all([
     self.clients.claim(),
-    caches.keys().then(keys=>Promise.all(
-      keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))
+    caches.keys().then(keys => Promise.all(
+      keys.filter(key => key !== CACHE).map(key => caches.delete(key))
     ))
   ]));
 });
 
 async function networkFirst(request){
   try{
-    const response=await fetch(request,{cache:'no-store'});
-    if(response&&response.ok){
-      const copy=response.clone();
-      caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{});
+    const response = await fetch(request, {cache:'no-store'});
+    if(response && response.ok){
+      const copy = response.clone();
+      caches.open(CACHE).then(cache => cache.put(request, copy)).catch(()=>{});
     }
     return response;
   }catch(error){
-    const cached=await caches.match(request);
-    if(cached)return cached;
+    const cached = await caches.match(request);
+    if(cached) return cached;
     throw error;
   }
 }
 
 async function cacheFirst(request){
-  const cached=await caches.match(request);
-  if(cached)return cached;
-  const response=await fetch(request);
-  if(response&&response.ok){
-    const copy=response.clone();
-    caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{});
+  const cached = await caches.match(request);
+  if(cached) return cached;
+  const response = await fetch(request);
+  if(response && response.ok){
+    const copy = response.clone();
+    caches.open(CACHE).then(cache => cache.put(request, copy)).catch(()=>{});
   }
   return response;
 }
 
-self.addEventListener('fetch',event=>{
-  if(event.request.method!=='GET')return;
-  const url=new URL(event.request.url);
-  if(url.origin!==self.location.origin)return;
+self.addEventListener('fetch', event => {
+  if(event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  if(url.origin !== self.location.origin) return;
 
-  if(event.request.mode==='navigate'){
+  if(event.request.mode === 'navigate'){
     event.respondWith(networkFirst(event.request).catch(async()=>{
-      return (await caches.match(event.request))||(await caches.match('/portal/'));
+      return (await caches.match(event.request)) || (await caches.match('/portal/'));
     }));
     return;
   }
 
   if(
-    url.pathname.endsWith('.js')||
-    url.pathname.endsWith('.css')||
-    url.pathname.endsWith('.html')||
-    url.pathname.endsWith('.json')||
+    url.pathname.endsWith('.js') ||
+    url.pathname.endsWith('.css') ||
+    url.pathname.endsWith('.html') ||
+    url.pathname.endsWith('.json') ||
     url.pathname.endsWith('.webmanifest')
   ){
     event.respondWith(networkFirst(event.request));
