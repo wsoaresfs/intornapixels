@@ -1,4 +1,4 @@
-const CACHE = 'intorna-pixels-rc17-waha';
+const CACHE = 'intorna-pixels-rc18-master-dual';
 
 const CORE = [
   '/',
@@ -36,6 +36,8 @@ const CORE = [
   '/shared/cloud.js',
   '/shared/platform.js',
   '/shared/tenant-bridge.js',
+  '/shared/rc18-master.js',
+  '/shared/rc18-studio.js',
   '/assets/logo.svg',
   '/assets/icon.svg',
   '/assets/logo-horizontal.png',
@@ -46,7 +48,7 @@ self.addEventListener('install',event=>{
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE).then(cache=>cache.addAll(CORE)).catch(error=>{
-      console.error('Falha ao preparar cache RC17 WAHA:',error);
+      console.error('Falha ao preparar cache RC18 Master Dual:',error);
     })
   );
 });
