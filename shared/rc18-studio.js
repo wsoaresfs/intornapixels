@@ -12,8 +12,49 @@ function addStyles(){
     .rc18-master-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#fef3c7;color:#92400e;font-size:11px;font-weight:900}
     .rc18-master-banner{border:1px solid rgba(245,158,11,.28);background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(124,58,237,.07));border-radius:16px;padding:14px;margin-bottom:16px}
     .rc18-master-banner .row{justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+
+    /* RC18: mantém o QR visível durante o polling do WAHA.
+       O RC17 esconde a imagem a cada atualização silenciosa,
+       o que fazia o QR "piscar" e dificultava o escaneamento. */
+    #ip17wQrBox.rc18-qr-ready #ip17wQrImg{
+      display:inline-block!important;
+      visibility:visible!important;
+      opacity:1!important;
+    }
+    #ip17wQrBox.rc18-qr-ready #ip17wQrLoading{
+      display:none!important;
+    }
   `;
   document.head.appendChild(s);
+}
+
+
+function stabilizeWahaQr(){
+  if(window.__INTORNA_RC18_QR_STABLE__) return;
+  window.__INTORNA_RC18_QR_STABLE__=true;
+
+  const sync=()=>{
+    const box=$('#ip17wQrBox');
+    const img=$('#ip17wQrImg');
+    if(!box||!img) return;
+
+    const src=String(img.getAttribute('src')||'').trim();
+    if(src){
+      box.classList.add('rc18-qr-ready');
+      img.setAttribute('aria-live','off');
+    }
+  };
+
+  const observer=new MutationObserver(sync);
+  observer.observe(document.documentElement,{
+    subtree:true,
+    childList:true,
+    attributes:true,
+    attributeFilter:['src','style']
+  });
+
+  sync();
+  setInterval(sync,800);
 }
 
 function goPlatform(){
@@ -30,6 +71,7 @@ function install(){
 
   window.__INTORNA_RC18_STUDIO__=true;
   addStyles();
+  stabilizeWahaQr();
 
   if(!ctx.isAdmin) return true;
 
