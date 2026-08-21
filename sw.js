@@ -1,120 +1,24 @@
-const CACHE = 'intorna-pixels-rc19-realtime-hardened-final';
-
-const CORE = [
-  '/',
-  '/index.html',
-  '/portal/',
-  '/portal/index.html',
-  '/admin/',
-  '/admin/index.html',
-  '/admin/admin.js',
-  '/admin/styles.css',
-  '/app/',
-  '/app/index.html',
-  '/app/app.js',
-  '/app/bootstrap-cloud.js',
-  '/app/features-v6.js',
-  '/app/features-v7.js',
-  '/app/features-v11.js',
-  '/app/features-v12.js',
-  '/app/features-v13.js',
-  '/app/features-v19.js',
-  '/app/features-waha-test.js',
-  '/app/styles.css',
-  '/app/styles-v6.css',
-  '/app/styles-v7.css',
-  '/app/features-v11.css',
-  '/cliente/',
-  '/cliente/index.html',
-  '/cliente/portal.js',
-  '/cliente/styles.css',
-  '/shared/supabase-config.js',
-  '/shared/cloud.js',
-  '/shared/platform.js',
-  '/shared/tenant-bridge.js',
-  '/shared/rc19-master.js',
-  '/shared/rc19-studio.js',
-  '/assets/logo.svg',
-  '/assets/icon.svg',
-  '/assets/logo-horizontal.png',
-  '/manifest.webmanifest'
+const CACHE='intorna-pixels-rc20-auto-production-security-launcher';
+const CORE=[
+ '/', '/index.html','/portal/','/portal/index.html','/admin/','/admin/index.html','/admin/admin.js','/admin/styles.css',
+ '/app/','/app/index.html','/app/app.js','/app/bootstrap-cloud.js','/app/features-v6.js','/app/features-v7.js','/app/features-v11.js','/app/features-v12.js','/app/features-v13.js','/app/features-v19.js','/app/features-v20.js','/app/features-waha-test.js',
+ '/app/styles.css','/app/styles-v6.css','/app/styles-v7.css','/app/features-v11.css',
+ '/cliente/','/cliente/index.html','/cliente/portal.js','/cliente/styles.css',
+ '/shared/supabase-config.js','/shared/cloud.js','/shared/platform.js','/shared/tenant-bridge.js','/shared/rc20-master.js','/shared/rc20-studio.js',
+ '/assets/logo.svg','/assets/icon.svg','/assets/logo-horizontal.png','/manifest.webmanifest'
 ];
-
-async function warmCache(){
-  const cache = await caches.open(CACHE);
-  const results = await Promise.allSettled(
-    CORE.map(async path => {
-      const response = await fetch(path, {cache:'reload'});
-      if(!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
-      await cache.put(path, response);
-    })
-  );
-  const failed = results.filter(x => x.status === 'rejected');
-  if(failed.length) console.warn(`RC19: ${failed.length} recurso(s) não entraram no cache inicial.`);
+async function warm(){
+ const c=await caches.open(CACHE);
+ const r=await Promise.allSettled(CORE.map(async p=>{const x=await fetch(p,{cache:'reload'});if(!x.ok)throw new Error(`${p}:${x.status}`);await c.put(p,x)}));
+ const f=r.filter(x=>x.status==='rejected');if(f.length)console.warn(`RC20: ${f.length} recurso(s) não entraram no cache inicial.`);
 }
-
-self.addEventListener('install', event => {
-  self.skipWaiting();
-  event.waitUntil(warmCache());
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(Promise.all([
-    self.clients.claim(),
-    caches.keys().then(keys => Promise.all(
-      keys.filter(key => key !== CACHE).map(key => caches.delete(key))
-    ))
-  ]));
-});
-
-async function networkFirst(request){
-  try{
-    const response = await fetch(request, {cache:'no-store'});
-    if(response && response.ok){
-      const copy = response.clone();
-      caches.open(CACHE).then(cache => cache.put(request, copy)).catch(()=>{});
-    }
-    return response;
-  }catch(error){
-    const cached = await caches.match(request);
-    if(cached) return cached;
-    throw error;
-  }
-}
-
-async function cacheFirst(request){
-  const cached = await caches.match(request);
-  if(cached) return cached;
-  const response = await fetch(request);
-  if(response && response.ok){
-    const copy = response.clone();
-    caches.open(CACHE).then(cache => cache.put(request, copy)).catch(()=>{});
-  }
-  return response;
-}
-
-self.addEventListener('fetch', event => {
-  if(event.request.method !== 'GET') return;
-  const url = new URL(event.request.url);
-  if(url.origin !== self.location.origin) return;
-
-  if(event.request.mode === 'navigate'){
-    event.respondWith(networkFirst(event.request).catch(async()=>{
-      return (await caches.match(event.request)) || (await caches.match('/portal/'));
-    }));
-    return;
-  }
-
-  if(
-    url.pathname.endsWith('.js') ||
-    url.pathname.endsWith('.css') ||
-    url.pathname.endsWith('.html') ||
-    url.pathname.endsWith('.json') ||
-    url.pathname.endsWith('.webmanifest')
-  ){
-    event.respondWith(networkFirst(event.request));
-    return;
-  }
-
-  event.respondWith(cacheFirst(event.request));
+self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(warm())});
+self.addEventListener('activate',e=>e.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))])));
+async function networkFirst(req){try{const r=await fetch(req,{cache:'no-store'});if(r&&r.ok)caches.open(CACHE).then(c=>c.put(req,r.clone())).catch(()=>{});return r}catch(e){const c=await caches.match(req);if(c)return c;throw e}}
+async function cacheFirst(req){const c=await caches.match(req);if(c)return c;const r=await fetch(req);if(r&&r.ok)caches.open(CACHE).then(x=>x.put(req,r.clone())).catch(()=>{});return r}
+self.addEventListener('fetch',e=>{
+ if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;
+ if(e.request.mode==='navigate'){e.respondWith(networkFirst(e.request).catch(async()=>await caches.match(e.request)||await caches.match('/portal/')));return}
+ if(/\.(js|css|html|json|webmanifest)$/.test(u.pathname)){e.respondWith(networkFirst(e.request));return}
+ e.respondWith(cacheFirst(e.request));
 });
