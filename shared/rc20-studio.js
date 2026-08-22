@@ -28,12 +28,12 @@ function install(){
    }
    if(!ctx.impersonating&&!$('#rc20MasterBanner')){
      const b=document.createElement('div');b.id='rc20MasterBanner';b.className='rc20-master-banner';
-     b.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><span class="rc20-master-pill">👑 MASTER • MEU ESTÚDIO • RC21</span><h2 style="margin:8px 0 4px">Produção + vendas + entrega</h2><p class="muted" style="margin:0">Seu estúdio agora inclui o Motor Automático de Ensaios IA.</p></div><button class="btn outline" id="rc20BackPlatform">🏢 Plataforma</button></div>`;
+     b.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><span class="rc20-master-pill">👑 MASTER • MEU ESTÚDIO • RC20</span><h2 style="margin:8px 0 4px">Produção + vendas + entrega</h2><p class="muted" style="margin:0">Seu estúdio agora inclui o Motor Automático de Ensaios IA.</p></div><button class="btn outline" id="rc20BackPlatform">🏢 Plataforma</button></div>`;
      dash.prepend(b);$('#rc20BackPlatform').onclick=goPlatform;
    }
    const side=$('#sidePlan');if(side&&!ctx.impersonating&&!/Master/i.test(side.textContent))side.textContent=`${side.textContent} • Master`;
  }
- window.IntornaRC20Studio={version:'21.0.0',goPlatform};
+ window.IntornaRC20Studio={version:'20.0.0',goPlatform};
  return true;
 }
 let tries=0;const boot=setInterval(()=>{tries++;if(install()||tries>120)clearInterval(boot)},250);
