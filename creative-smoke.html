@@ -30,6 +30,6 @@
     window.goPage=(id)=>{document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));const b=document.querySelector('.nav button[data-page="'+id+'"]');document.getElementById('pageTitle').textContent=b?.querySelector('.label')?.textContent||'Painel'};
     navigator.clipboard={writeText:async()=>{}};
   </script>
-  <script src="/rc22_work/app/features-v22-creative.js"></script>
+  <script src="/app/features-v22-creative.js"></script>
 </body>
 </html>
