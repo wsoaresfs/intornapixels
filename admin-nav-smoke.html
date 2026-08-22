@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RC22 Admin Navigation Smoke Test</title>
+</head>
+<body>
+  <div id="smokeStatus">INICIANDO</div>
+  <script>
+  (async()=>{
+    const status=document.getElementById('smokeStatus');
+    const fail=message=>{document.documentElement.dataset.smoke='FAIL';status.textContent='FAIL: '+message;throw new Error(message)};
+    try{
+      const html=await fetch('/admin/index.html?v=smoke',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('admin index '+r.status);return r.text()});
+      const parsed=new DOMParser().parseFromString(html,'text/html');
+      document.head.querySelectorAll('link').forEach(x=>x.remove());
+      parsed.head.querySelectorAll('link[rel="stylesheet"]').forEach(x=>document.head.appendChild(x.cloneNode(true)));
+      document.body.innerHTML=parsed.body.innerHTML;
+      const query={
+        select(){return this},order(){return this},eq(){return this},limit(){return this},
+        maybeSingle(){return Promise.resolve({data:{},error:null})},
+        then(resolve){return Promise.resolve({data:[],error:null}).then(resolve)}
+      };
+      window.IntornaCloud={
+        requireAdmin:async()=>({user:{id:'smoke-user',email:'smoke@intorna.test',user_metadata:{full_name:'Smoke Admin'}},isAdmin:true,studioId:'smoke-studio'}),
+        client:{
+          from:()=>Object.create(query),
+          auth:{getSession:async()=>({data:{session:{expires_at:Math.floor(Date.now()/1000)+3600}},error:null}),refreshSession:async()=>({data:{session:{}},error:null})},
+          functions:{invoke:async()=>({data:{agents:[],jobs:[],connection:{}},error:null})},
+          channel:()=>({on(){return this},subscribe(){return this}})
+        },
+        adminAction:async()=>({}),
+        signOut:async()=>{}
+      };
+      window.goPage=()=>true;
+      const load=src=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('script '+src));document.body.appendChild(s)});
+      await load('/shared/rc20-master.js?v=22.0.2-smoke');
+      await new Promise(r=>setTimeout(r,450));
+      const studioBefore=document.getElementById('rc20MyStudio');
+      if(!studioBefore)fail('Meu Estúdio não foi instalado');
+      await load('/admin/admin.js?v=22.0.2-smoke');
+      await new Promise(r=>setTimeout(r,800));
+      const overview=document.getElementById('overview');
+      if(window.goPage(undefined)!==false)fail('página inválida não foi bloqueada');
+      if(!overview.classList.contains('active'))fail('página ativa sumiu após navegação inválida');
+      document.querySelector('[data-page="studios"]').click();
+      if(!document.getElementById('studios').classList.contains('active'))fail('navegação normal falhou');
+      const studio=document.getElementById('rc20MyStudio');
+      if(!studio||studio.dataset.action!=='open-studio'||studio.hasAttribute('data-page'))fail('ação Meu Estúdio foi sobrescrita');
+      const infra=document.getElementById('rc20InfraNav');
+      if(!infra||infra.dataset.action!=='open-infra'||infra.dataset.page!=='rc20infra')fail('ação Infra perdeu o contrato');
+      document.documentElement.dataset.smoke='PASS';
+      status.textContent='PASS • Meu Estúdio preservado • navegação inválida bloqueada • páginas internas funcionando';
+    }catch(e){
+      if(document.documentElement.dataset.smoke!=='FAIL'){document.documentElement.dataset.smoke='FAIL';status.textContent='FAIL: '+e.message}
+      console.error(e);
+    }
+  })();
+  </script>
+</body>
+</html>
