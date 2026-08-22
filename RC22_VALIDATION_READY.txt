@@ -1,0 +1,10 @@
+INTORNÁ PIXELS — RC22 VALIDATION
+
+Branch de validação isolada da produção.
+Base estável: RC20 em produção.
+Objetivos da RC22:
+- Identity First / Referência Ideal
+- entrega final em arquivos individuais, sem grade
+- Creative Performance IA para tráfego pago
+- score de conversão e refinamento
+- validação antes de merge na main
