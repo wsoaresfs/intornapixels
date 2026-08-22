@@ -9,7 +9,15 @@ function toB64(bytes:Uint8Array){let out='';const chunk=0x8000;for(let i=0;i<byt
 const aspectFor=(size:string)=>size==='1024x1024'?'1:1':size==='1536x1024'?'3:2':'2:3';
 const googleSizeFor=(quality:string)=>quality==='high'?'4K':quality==='low'?'1K':'2K';
 const extFor=(mime:string)=>mime==='image/jpeg'?'jpg':mime==='image/webp'?'webp':'png';
-function openAIError(status:number,body:any){if(status===401)return new Error('Sua chave OpenAI é inválida ou foi revogada.');if(status===403)return new Error('Sua chave não tem permissão para gerar imagens.');if(status===429)return new Error('Sua conta OpenAI atingiu o limite ou está sem créditos.');return new Error(body?.error?.message||'Falha ao gerar imagem na OpenAI.')}
+class ApiError extends Error{status:number;code:string;actionUrl?:string;constructor(message:string,status=500,code='generation_failed',actionUrl?:string){super(message);this.name='ApiError';this.status=status;this.code=code;this.actionUrl=actionUrl}}
+function openAIError(status:number,body:any){
+  const providerCode=String(body?.error?.code||'').toLowerCase(),providerMessage=String(body?.error?.message||''),message=providerMessage.toLowerCase();
+  if(status===401||providerCode==='invalid_api_key')return new ApiError('Sua chave OpenAI é inválida ou foi revogada. Crie uma nova chave e salve novamente.',401,'openai_invalid_key','https://platform.openai.com/api-keys');
+  if(status===403)return new ApiError('Sua chave não tem permissão para gerar imagens. Verifique o projeto e as permissões da chave.',403,'openai_permission_denied','https://platform.openai.com/api-keys');
+  if(providerCode==='insufficient_quota'||message.includes('billing hard limit')||message.includes('billing quota')||message.includes('run out of credits')||message.includes('no balance')||message.includes('insufficient quota'))return new ApiError('Sua conta da API OpenAI está sem créditos ou atingiu o limite de gastos. Regularize o faturamento e tente novamente.',402,'openai_billing_limit','https://platform.openai.com/settings/organization/billing');
+  if(status===429)return new ApiError('A OpenAI recebeu muitas solicitações em pouco tempo. Aguarde um momento e tente novamente.',429,'openai_rate_limit');
+  return new ApiError(providerMessage||'Falha ao gerar imagem na OpenAI. Tente novamente.',status>=400&&status<600?status:500,'openai_generation_failed');
+}
 
 Deno.serve(async(req:Request)=>{
   if(req.method==='OPTIONS')return new Response('ok',{headers:cors});
@@ -122,6 +130,7 @@ Deno.serve(async(req:Request)=>{
     reservedQty=0;return json({ok:true,jobId:job.id,provider,model,images:urls,paths:outputs,usage:{used,limit}});
   }catch(e){
     console.error(e);try{const url=Deno.env.get('SUPABASE_URL')||'',secret=sk();if(url&&secret){const s=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});if(jobId)await s.from('ai_generation_jobs').update({status:'failed',error_message:e instanceof Error?e.message:String(e),completed_at:new Date().toISOString()}).eq('id',jobId);if(reservedStudioId&&reservedQty>0)await s.rpc('release_ai_quota',{p_studio_id:reservedStudioId,p_quantity:reservedQty});}}catch(releaseErr){console.error('generate-image cleanup',releaseErr)}
-    return json({error:e instanceof Error?e.message:String(e)},500);
+    const apiError=e instanceof ApiError?e:null;
+    return json({error:e instanceof Error?e.message:String(e),code:apiError?.code||'generation_failed',actionUrl:apiError?.actionUrl||null},apiError?.status||500);
   }
 });
