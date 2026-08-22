@@ -1,0 +1,17 @@
+INTORNÁ PIXELS RC21 — ARQUIVOS PARA GITHUB
+
+Envie estes arquivos mantendo exatamente as pastas:
+/app/features-v13.js
+/app/features-v21.js
+/shared/supabase-config.js
+/shared/rc20-studio.js
+/shared/rc20-master.js
+/sw.js
+/flow-bridge/IntornaFlowBridge-RC21.zip
+/flow-bridge/README_FLOW_BRIDGE_RC21.txt
+/launcher/IntornaLauncher-RC21.zip
+
+O backend RC21 já foi aplicado no Supabase. NÃO execute SQL manualmente.
+Depois do deploy Vercel ficar READY, abra o app e faça Ctrl+F5.
+
+Backend verificado: production-identity v1 ACTIVE e production-external v6 ACTIVE.

@@ -1,0 +1,10 @@
+e0101387b2c4eec838b600deb2724e4a70bbe0214b3a52adf3d2ed0cdc16fae8  ./LEIA_PRIMEIRO.txt
+19c3bc3edd4df476720e10c661b39e9dd168aeb15d49ada6a0e2cd59b45d453a  ./app/features-v13.js
+94854f1ec48711198e0740845d92205fbaeb7c5c73b51d3c97e01470105a00dc  ./app/features-v21.js
+df0b2ad2a38454eb5f0b21ed38c3df3653467c204493271c7b7bddd57a958bce  ./flow-bridge/IntornaFlowBridge-RC21.zip
+59afe57ab71c4ce6ed7aa150194383f9f9e89fe89f989c0db094397579b66001  ./flow-bridge/README_FLOW_BRIDGE_RC21.txt
+d003560512ce2e33a88ea7eaf739caf0054ee7b085fcfb08a623e42e5b40693e  ./launcher/IntornaLauncher-RC21.zip
+f308906bf06e30247670238bbc188af2b7771fe8dd40f67b6904ae45563d643d  ./shared/rc20-master.js
+4da121b873e15647b516f7cfad8d83c07dfed71d6b48719c5c9c9657f71fa0ff  ./shared/rc20-studio.js
+04bb14a171dff083e221a3aa3df30cbcb18a36da21fca966fc69197a9f94edfc  ./shared/supabase-config.js
+11cf9188b5fff995c7b327b4e51eafc833b227cac8142c7ae240c1d035f3a87a  ./sw.js
