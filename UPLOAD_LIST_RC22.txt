@@ -1,0 +1,30 @@
+RC22 — ARQUIVOS PARA GITHUB
+
+RAIZ
+- sw.js [SUBSTITUIR]
+- vercel.json [MANTER/SUBSTITUIR]
+
+PASTA app
+- app/features-v13.js [SUBSTITUIR: loader RC22]
+- app/features-v22.js [NOVO]
+- app/features-v19.js [MANTER]
+- app/features-v20.js [MANTER]
+- app/features-v21.js [MANTER para rollback]
+
+PASTA shared
+- shared/rc20-master.js [SUBSTITUIR: rótulos/launcher RC22]
+
+PASTA portal
+- portal/index.html [SUBSTITUIR]
+
+PASTA flow-bridge
+- flow-bridge/IntornaFlowBridge-RC22.zip [NOVO]
+
+PASTA launcher
+- launcher/IntornaLauncher-RC22.zip [NOVO]
+
+BACKEND — PUBLICAR PELO SUPABASE, NÃO PELO SITE
+- backend/migrations/rc22_identity_lock_v3.sql
+- backend/production-identity/index.ts
+- backend/production-external/index.ts
+
