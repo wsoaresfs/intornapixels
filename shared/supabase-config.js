@@ -6,15 +6,15 @@ window.INTORNA_BACKEND = {
 
 (function(){
   'use strict';
-  if(window.__INTORNA_RC20_SHARED_LOADER__) return;
-  window.__INTORNA_RC20_SHARED_LOADER__ = true;
+  if(window.__INTORNA_RC22_SHARED_LOADER__) return;
+  window.__INTORNA_RC22_SHARED_LOADER__ = true;
   const path=String(location.pathname||'/');
   let src='';
-  if(path.startsWith('/admin')) src='/shared/rc20-master.js?v=20.0.0';
-  else if(path.startsWith('/app')) src='/shared/rc20-studio.js?v=20.0.0';
+  if(path.startsWith('/admin')) src='/shared/rc20-master.js?v=22.0.2';
+  else if(path.startsWith('/app')) src='/shared/rc20-studio.js?v=22.0.2';
   if(!src) return;
   const s=document.createElement('script');
-  s.src=src;s.async=true;s.dataset.intornaRc20='true';
-  s.onerror=()=>console.warn('Intorná RC20: módulo complementar não carregado:',src);
+  s.src=src;s.async=true;s.dataset.intornaRc22='true';
+  s.onerror=()=>console.warn('Intorná RC22: módulo complementar não carregado:',src);
   (document.head||document.documentElement).appendChild(s);
 })();

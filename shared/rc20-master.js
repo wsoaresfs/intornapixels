@@ -7,7 +7,7 @@ async function fresh(){let {data,error}=await window.IntornaCloud.client.auth.ge
 async function invoke(name,body){await fresh();let r=await window.IntornaCloud.client.functions.invoke(name,{body});if(r.error){let m=r.error.message;try{const c=r.error.context;if(c?.clone){const j=await c.clone().json();m=j?.error||m}}catch{}throw new Error(m)}if(r.data?.error)throw new Error(String(r.data.error));return r.data||{}}
 const waha=(action,extra={})=>invoke('waha-connect',{action,studioId:ctx?.studioId,...extra});
 const launcher=(action,extra={})=>invoke('launcher-control',{action,...extra});
-function openMyStudio(){localStorage.removeItem('intorna_impersonate_studio');location.href='/app/'}
+function openMyStudio(){localStorage.removeItem('intorna_impersonate_studio');location.assign('/app/')}
 function styles(){
  if($('#rc20MasterStyles'))return;const s=document.createElement('style');s.id='rc20MasterStyles';s.textContent=`
  .rc20-master-nav{background:linear-gradient(135deg,rgba(245,158,11,.16),rgba(124,58,237,.14))!important;border:1px solid rgba(245,158,11,.24)!important}
@@ -20,8 +20,8 @@ function styles(){
 }
 function addNav(){
  const nav=$('.nav');if(!nav)return;
- if(!$('#rc20MyStudio')){const b=document.createElement('button');b.id='rc20MyStudio';b.className='rc20-master-nav';b.innerHTML='<span class="ico">📸</span><span class="label">Meu Estúdio</span>';b.onclick=openMyStudio;nav.querySelector('[data-page="overview"]')?.after(b)}
- if(!$('#rc20InfraNav')){const b=document.createElement('button');b.id='rc20InfraNav';b.dataset.page='rc20infra';b.innerHTML='<span class="ico">🚀</span><span class="label">Infra + Launcher</span><span class="pill" style="margin-left:auto">RC22</span>';b.onclick=()=>{window.goPage?.('rc20infra');loadAll(true)};const set=nav.querySelector('[data-page="settings"]');set?nav.insertBefore(b,set):nav.appendChild(b)}
+ if(!$('#rc20MyStudio')){const b=document.createElement('button');b.type='button';b.id='rc20MyStudio';b.dataset.action='open-studio';b.className='rc20-master-nav';b.innerHTML='<span class="ico">📸</span><span class="label">Meu Estúdio</span>';b.addEventListener('click',openMyStudio);nav.querySelector('[data-page="overview"]')?.after(b)}
+ if(!$('#rc20InfraNav')){const b=document.createElement('button');b.type='button';b.id='rc20InfraNav';b.dataset.page='rc20infra';b.dataset.action='open-infra';b.innerHTML='<span class="ico">🚀</span><span class="label">Infra + Launcher</span><span class="pill" style="margin-left:auto">RC22</span>';b.addEventListener('click',()=>{window.goPage?.('rc20infra');loadAll(true)});const set=nav.querySelector('[data-page="settings"]');set?nav.insertBefore(b,set):nav.appendChild(b)}
 }
 function addOverview(){
  const grid=$('#overview .grid');if(!grid||$('#rc20Overview'))return;const c=document.createElement('div');c.id='rc20Overview';c.className='card one';c.style.cssText='border:1px solid rgba(245,158,11,.28);background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(124,58,237,.07))';c.innerHTML='<div class="rc20-kicker">RC22 • MASTER</div><h2>📸 Seu Estúdio + Produção Automática</h2><p>Administre a plataforma e produza seus próprios ensaios com IA.</p><div class="row"><button class="btn gold" id="rc20OpenStudio">Abrir Meu Estúdio</button><button class="btn outline" id="rc20OpenInfra">Infra + Launcher</button></div>';grid.appendChild(c);$('#rc20OpenStudio').onclick=openMyStudio;$('#rc20OpenInfra').onclick=()=>{window.goPage?.('rc20infra');loadAll(true)}
@@ -78,7 +78,7 @@ async function install(){
  if(window.__INTORNA_RC20_MASTER__)return true;
  if(!window.IntornaCloud?.client||!window.goPage||!$('.nav')||!$('.container'))return false;
  try{ctx=await window.IntornaCloud.requireAdmin();if(!ctx)return true}catch(e){return false}
- window.__INTORNA_RC20_MASTER__=true;styles();addNav();addOverview();addPage();installRealtime();loadAll(false);window.IntornaRC20Master={version:'21.0.0',refresh:()=>loadAll(true),openMyStudio};return true;
+ window.__INTORNA_RC20_MASTER__=true;styles();addNav();addOverview();addPage();installRealtime();loadAll(false);window.IntornaRC20Master={version:'22.0.2',refresh:()=>loadAll(true),openMyStudio};return true;
 }
 let tries=0;const boot=setInterval(async()=>{tries++;if(await install()||tries>120)clearInterval(boot)},250);
 })();

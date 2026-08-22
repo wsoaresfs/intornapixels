@@ -60,8 +60,8 @@ label{display:block;font-size:13px;font-weight:800;margin:14px 0 6px}input{width
 </section>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.min.js"></script>
-<script src="/shared/supabase-config.js"></script>
-<script src="/shared/cloud.js"></script>
+<script src="/shared/supabase-config.js?v=22.0.2"></script>
+<script src="/shared/cloud.js?v=22.0.2"></script>
 <script>
 const $=id=>document.getElementById(id),err=$('error'),ok=$('ok');
 function showMsg(el,msg){err.style.display='none';ok.style.display='none';el.textContent=msg;el.style.display='block'}
@@ -118,5 +118,6 @@ IntornaCloud.client.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVE
  if(s){let p={};try{p=JSON.parse(localStorage.getItem('intorna_pending_profile')||'{}')}catch{}localStorage.removeItem('intorna_pending_profile');await finish(p)}
 })();
 </script>
+<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(()=>{})}</script>
 </body>
 </html>

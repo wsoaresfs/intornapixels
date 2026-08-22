@@ -785,7 +785,7 @@ global.IntornaRC11Sync={
         'script'
       );
 
-    script.src='app.js';
+    script.src='app.js?v=22.0.2';
 
     script.onload=
       async()=>{
@@ -806,7 +806,7 @@ global.IntornaRC11Sync={
             'script'
           );
 
-        v6.src='features-v6.js';
+        v6.src='features-v6.js?v=22.0.2';
         v6.async=false;
 
         document.body.appendChild(
@@ -824,7 +824,7 @@ global.IntornaRC11Sync={
             'script'
           );
 
-        v7.src='features-v7.js';
+        v7.src='features-v7.js?v=22.0.2';
         v7.async=false;
 
         document.body.appendChild(
@@ -842,7 +842,7 @@ global.IntornaRC11Sync={
             'script'
           );
 
-        v11.src='features-v11.js';
+        v11.src='features-v11.js?v=22.0.2';
         v11.async=false;
 
         document.body.appendChild(
@@ -861,7 +861,7 @@ global.IntornaRC11Sync={
             'script'
           );
 
-        v12.src='features-v12.js';
+        v12.src='features-v12.js?v=22.0.2';
         v12.async=false;
 
         document.body.appendChild(
@@ -881,7 +881,7 @@ global.IntornaRC11Sync={
             );
 
           waha.src=
-            'features-waha-test.js';
+            'features-waha-test.js?v=22.0.2';
 
           waha.async=false;
 
