@@ -10,8 +10,8 @@ window.INTORNA_BACKEND = {
   window.__INTORNA_RC22_SHARED_LOADER__ = true;
   const path=String(location.pathname||'/');
   let src='';
-  if(path.startsWith('/admin')) src='/shared/rc20-master.js?v=22.0.2';
-  else if(path.startsWith('/app')) src='/shared/rc20-studio.js?v=22.0.2';
+  if(path.startsWith('/admin')) src='/shared/rc20-master.js?v=22.4.0';
+  else if(path.startsWith('/app')) src='/shared/rc20-studio.js?v=22.4.0';
   if(!src) return;
   const s=document.createElement('script');
   s.src=src;s.async=true;s.dataset.intornaRc22='true';

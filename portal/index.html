@@ -13,7 +13,7 @@
 .visual{padding:52px;background:linear-gradient(145deg,#0B132B,#25115B);color:#fff}.visual img{width:260px;filter:brightness(0) invert(1)}.visual h1{font-size:42px;line-height:1.05;margin:48px 0 16px}.visual p{color:#CBD1EF;line-height:1.65}.benefits{margin-top:28px;display:grid;gap:12px}.benefits div{display:flex;gap:10px;color:#E9ECFF}
 .login{padding:42px}.login h2{font-size:29px;margin:0 0 8px}.muted{color:var(--muted)}.tabs{display:flex;background:#F1F5F9;border-radius:12px;padding:4px;margin:20px 0}.tabs button{flex:1;border:0;background:transparent;padding:10px;border-radius:9px;font-weight:800;cursor:pointer}.tabs button.active{background:#fff;box-shadow:0 2px 8px #0f172a14}.panel{display:none}.panel.active{display:block}
 label{display:block;font-size:13px;font-weight:800;margin:14px 0 6px}input{width:100%;padding:13px;border:1px solid #CBD5E1;border-radius:11px;font:inherit}.btn{width:100%;padding:13px;border:0;border-radius:11px;font:inherit;font-weight:900;cursor:pointer}.primary{margin-top:18px;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff}.ghost{margin-top:10px;background:#EEF2F7}.link{border:0;background:none;color:var(--blue);font-weight:800;cursor:pointer;padding:8px 0}
-.msg{display:none;margin-top:14px;padding:12px;border-radius:10px;font-size:13px;line-height:1.5}.msg.error{background:#FEE2E2;color:#991B1B}.msg.ok{background:#DCFCE7;color:#166534}.cloud{margin-top:18px;padding:12px;background:#EEFDF7;border:1px solid #BBF7D0;border-radius:12px;font-size:12px}.security{margin-top:10px;padding:12px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;font-size:12px}.footer{margin-top:20px;text-align:center;font-size:12px;color:var(--muted)}
+.msg{display:none;margin-top:14px;padding:12px;border-radius:10px;font-size:13px;line-height:1.5}.msg.error{background:#FEE2E2;color:#991B1B}.msg.ok{background:#DCFCE7;color:#166534}.cloud{margin-top:18px;padding:12px;background:#EEFDF7;border:1px solid #BBF7D0;border-radius:12px;font-size:12px}.security{margin-top:10px;padding:12px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;font-size:12px}.footer{margin-top:20px;text-align:center;font-size:12px;color:var(--muted)}.beta-pill{display:inline-flex;padding:7px 10px;border-radius:999px;background:#FEF3C7;color:#92400E;font-size:11px;font-weight:900;letter-spacing:.04em}.legal-check{display:flex;align-items:flex-start;gap:9px;margin-top:15px;font-size:12px;line-height:1.45;color:#475569}.legal-check input{width:auto;margin-top:3px}.legal-check a{color:var(--blue);font-weight:800}.spots{margin-top:8px;color:#166534;font-weight:800;font-size:12px}
 @media(max-width:760px){.box{grid-template-columns:1fr}.visual{display:none}.login{padding:28px 22px}}
 </style>
 </head>
@@ -21,9 +21,10 @@ label{display:block;font-size:13px;font-weight:800;margin:14px 0 6px}input{width
 <div class="box">
 <section class="visual">
 <img src="/assets/logo.svg" alt="Intorná Pixels">
-<h1>Produza, venda e entregue ensaios com IA.</h1>
-<p>RC22 une produção automática, WhatsApp, galeria, vendas e segurança em um único fluxo.</p>
-<div class="benefits"><div>✓ Motor Automático de Ensaios</div><div>✓ Dados separados por estúdio</div><div>✓ Login real com Supabase Auth</div><div>✓ Master provisionado explicitamente</div></div>
+<span class="beta-pill">BETA FECHADO • 3 PARTICIPANTES</span>
+<h1>Do assunto à arte pronta para avaliar.</h1>
+<p>Teste o gerador de criativos da Intorná, organize seu estúdio e nos ajude a construir a versão de lançamento.</p>
+<div class="benefits"><div>✓ Assunto simples vira prompt completo</div><div>✓ Fluxo ChatGPT → Meta → V2</div><div>✓ Dados separados por estúdio</div><div>✓ Beta gratuito e sem cobrança</div></div>
 </section>
 <section class="login">
 <h2 id="title">Acessar a plataforma</h2><p class="muted" id="subtitle">Entre ou crie sua conta.</p>
@@ -36,12 +37,15 @@ label{display:block;font-size:13px;font-weight:800;margin:14px 0 6px}input{width
 
 <div id="signupPanel" class="panel">
 <form id="signupForm">
+<label>Código do convite beta</label><input id="signupInvite" autocomplete="one-time-code" required placeholder="Ex.: BETA-XXXX-XXXX">
 <label>Seu nome</label><input id="signupName" required placeholder="Nome completo">
 <label>Nome do estúdio</label><input id="signupStudio" required placeholder="Ex.: Meu Estúdio">
 <label>Código de indicação (opcional)</label><input id="signupReferral" placeholder="Ex.: PIX12345678">
 <label>E-mail</label><input id="signupEmail" type="email" autocomplete="username" required placeholder="seu@email.com">
-<label>Senha</label><input id="signupPassword" type="password" minlength="10" autocomplete="new-password" required placeholder="Mínimo 10 caracteres">
-<button class="btn primary" type="submit">Criar minha conta</button>
+<label>Senha</label><input id="signupPassword" type="password" minlength="10" autocomplete="new-password" required placeholder="10+ caracteres, maiúscula, minúscula e número">
+<label class="legal-check"><input id="signupLegal" type="checkbox" required><span>Li e aceito os <a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a> do beta.</span></label>
+<button class="btn primary" id="signupSubmit" type="submit">Ativar minha vaga beta</button>
+<div class="spots" id="betaSpots">Verificando vagas…</div>
 </form>
 </div>
 
@@ -54,9 +58,9 @@ label{display:block;font-size:13px;font-weight:800;margin:14px 0 6px}input{width
 </div>
 
 <div class="msg error" id="error"></div><div class="msg ok" id="ok"></div>
-<div class="cloud"><b>Banco online ativo.</b><br>Clientes, pedidos e produção ficam protegidos por autenticação e RLS.</div>
-<div class="security"><b>RC22 Segurança.</b><br>Uma conta comum nunca vira Master automaticamente. Acesso Master é provisionado explicitamente pela plataforma.</div>
-<button class="btn ghost" id="backBtn">Voltar ao site</button><div class="footer">Intorná Pixels • RC22</div>
+<div class="cloud"><b>Beta gratuito.</b><br>Nenhuma assinatura ou cobrança será criada durante esta fase.</div>
+<div class="security"><b>Dados protegidos.</b><br>Clientes, pedidos e criativos ficam isolados por estúdio com autenticação e RLS.</div>
+<button class="btn ghost" id="backBtn">Voltar ao site</button><div class="footer">Intorná Pixels • RC22.4 Beta</div>
 </section>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/dist/umd/supabase.min.js"></script>
@@ -64,7 +68,17 @@ label{display:block;font-size:13px;font-weight:800;margin:14px 0 6px}input{width
 <script src="/shared/cloud.js?v=22.0.2"></script>
 <script>
 const $=id=>document.getElementById(id),err=$('error'),ok=$('ok');
+const LEGAL_VERSION='2026-08-23';
 function showMsg(el,msg){err.style.display='none';ok.style.display='none';el.textContent=msg;el.style.display='block'}
+async function betaAccess(body){
+ const {data,error}=await IntornaCloud.client.functions.invoke('beta-access',{body});
+ if(error){let message=error.message;try{const response=error.context;if(response?.clone){const details=await response.clone().json();message=details?.error||message}}catch{}throw new Error(message)}
+ if(data?.error)throw new Error(data.error);return data||{};
+}
+async function loadBetaStatus(){
+ try{const status=await betaAccess({action:'status'});$('betaSpots').textContent=status.full?'As 3 vagas iniciais foram preenchidas.':`${status.remaining} de ${status.capacity} vagas disponíveis.`;$('signupSubmit').disabled=!status.enabled||status.full}
+ catch(_){$('betaSpots').textContent='Cadastro disponível somente com convite.'}
+}
 function setTab(which){
  const login=which==='login',signup=which==='signup';
  $('tabs').style.display='flex';$('tabLogin').classList.toggle('active',login);$('tabSignup').classList.toggle('active',signup);
@@ -87,18 +101,21 @@ $('loginForm').onsubmit=async e=>{
  if(error){showMsg(err,error.message);return}await finish();
 };
 $('signupForm').onsubmit=async e=>{
- e.preventDefault();const full_name=$('signupName').value.trim(),studio_name=$('signupStudio').value.trim(),referral_code=$('signupReferral').value.trim().toUpperCase(),email=$('signupEmail').value.trim(),password=$('signupPassword').value;
- if(password.length<10){showMsg(err,'Use uma senha com pelo menos 10 caracteres.');return}
- showMsg(ok,'Criando sua conta…');
- const {data,error}=await IntornaCloud.client.auth.signUp({email,password,options:{data:{full_name,studio_name,referral_code},emailRedirectTo:location.origin+'/portal/'}});
- if(error){showMsg(err,error.message);return}
- if(data.session)await finish({full_name,studio_name,referral_code});
- else{localStorage.setItem('intorna_pending_profile',JSON.stringify({full_name,studio_name,referral_code}));showMsg(ok,'Conta criada. Confira seu e-mail e confirme o cadastro. Depois volte para entrar.')}
+ e.preventDefault();const invite_code=$('signupInvite').value.trim(),full_name=$('signupName').value.trim(),studio_name=$('signupStudio').value.trim(),referral_code=$('signupReferral').value.trim().toUpperCase(),email=$('signupEmail').value.trim(),password=$('signupPassword').value;
+ if(password.length<10||!/[a-z]/.test(password)||!/[A-Z]/.test(password)||!/\d/.test(password)){showMsg(err,'Use 10 ou mais caracteres, com maiúscula, minúscula e número.');return}
+ if(!$('signupLegal').checked){showMsg(err,'Aceite os Termos e a Política de Privacidade para participar.');return}
+ const button=$('signupSubmit');button.disabled=true;showMsg(ok,'Ativando sua vaga beta…');
+ try{
+  await betaAccess({action:'register',invite_code,full_name,studio_name,referral_code,email,password,accepted_terms:true,accepted_privacy:true,terms_version:LEGAL_VERSION,privacy_version:LEGAL_VERSION});
+  const {error}=await IntornaCloud.client.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  showMsg(ok,'Conta beta criada. Preparando seu estúdio…');await finish({full_name,studio_name,referral_code});
+ }catch(error){showMsg(err,error.message||'Não foi possível criar sua conta.');button.disabled=false}
 };
 $('forgotBtn').onclick=async()=>{
  const email=$('loginEmail').value.trim();if(!email){showMsg(err,'Digite seu e-mail primeiro.');return}
  const {error}=await IntornaCloud.client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/portal/?recovery=1'});
- if(error)showMsg(err,error.message);else showMsg(ok,'Enviamos as instruções de recuperação para seu e-mail.');
+ if(error)showMsg(err,`${error.message} Se não receber o e-mail, escreva para contato@intornapixels.com.br.`);else showMsg(ok,'Enviamos as instruções de recuperação. Se não chegar, escreva para contato@intornapixels.com.br.');
 };
 $('recoveryForm').onsubmit=async e=>{
  e.preventDefault();const p1=$('newPassword').value,p2=$('newPassword2').value;
@@ -115,7 +132,8 @@ IntornaCloud.client.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVE
 (async()=>{
  if(recoveryHint){showRecovery();return}
  const s=await IntornaCloud.getSession().catch(()=>null);
- if(s){let p={};try{p=JSON.parse(localStorage.getItem('intorna_pending_profile')||'{}')}catch{}localStorage.removeItem('intorna_pending_profile');await finish(p)}
+ if(s){let p={};try{p=JSON.parse(localStorage.getItem('intorna_pending_profile')||'{}')}catch{}localStorage.removeItem('intorna_pending_profile');await finish(p);return}
+ await loadBetaStatus();
 })();
 </script>
 <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(()=>{})}</script>

@@ -861,7 +861,7 @@ global.IntornaRC11Sync={
             'script'
           );
 
-        v12.src='features-v12.js?v=22.1.0';
+        v12.src='features-v12.js?v=22.4.0';
         v12.async=false;
 
         document.body.appendChild(

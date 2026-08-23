@@ -126,7 +126,7 @@ setTimeout(()=>clearInterval(timer),15000);
 (()=>{
   if(document.querySelector('script[data-intorna-v13]')) return;
   const s=document.createElement('script');
-  s.src='features-v13.js?v=22.1.0';
+  s.src='features-v13.js?v=22.4.0';
   s.async=false;
   s.dataset.intornaV13='1';
   document.body.appendChild(s);
