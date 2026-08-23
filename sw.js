@@ -1,6 +1,6 @@
-const CACHE='intorna-rc22-4-v7';
+const CACHE='intorna-rc22-5-v8';
 const CORE=[
- '/','/termos.html','/privacidade.html','/portal/','/portal/index.html','/admin/','/admin/index.html','/admin/admin.js','/admin/features-v24-beta.js','/admin/styles.css','/app/','/app/index.html','/app/app.js','/app/bootstrap-cloud.js','/app/features-v6.js','/app/features-v7.js','/app/features-v11.js','/app/features-v12.js','/app/features-v13.js','/app/features-v19.js','/app/features-v20.js','/app/features-v22.js','/app/features-v22-creative.js','/app/features-v24-beta.js','/app/features-waha-test.js',
+ '/','/termos.html','/privacidade.html','/portal/','/portal/index.html','/catalogo/','/catalogo/index.html','/admin/','/admin/index.html','/admin/admin.js','/admin/features-v24-beta.js','/admin/styles.css','/app/','/app/index.html','/app/app.js','/app/bootstrap-cloud.js','/app/features-v6.js','/app/features-v7.js','/app/features-v11.js','/app/features-v12.js','/app/features-v13.js','/app/features-v19.js','/app/features-v20.js','/app/features-v22.js','/app/features-v22-creative.js','/app/features-v24-beta.js','/app/features-v25-catalogs.js','/app/features-waha-test.js',
  '/shared/supabase-config.js','/shared/cloud.js','/shared/platform.js','/shared/tenant-bridge.js','/shared/rc20-master.js','/shared/rc20-studio.js',
  '/flow-bridge/IntornaFlowBridge-RC22.zip','/launcher/IntornaLauncher-RC22.zip'
 ];
