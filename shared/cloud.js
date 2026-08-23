@@ -45,8 +45,12 @@ async function invokeFunction(name,body={}){
     const r=await client.auth.refreshSession();
     if(!r.error&&r.data?.session)({data,error}=await client.functions.invoke(name,{body}));
   }
-  if(data?.error)throw new Error(String(data.error));
-  if(error)throw error;
+  if(data?.error){const e=new Error(String(data.error));e.code=data.code||'function_error';throw e}
+  if(error){
+    let message=error.message,code='function_error';
+    try{const response=error.context;if(response?.clone){const details=await response.clone().json();message=details?.error||message;code=details?.code||code}}catch(_){ }
+    const e=new Error(message);e.code=code;e.status=error.context?.status||0;throw e;
+  }
   return data||{};
 }
 async function bootstrap(profile={}){return invokeFunction('bootstrap-account',profile)}
