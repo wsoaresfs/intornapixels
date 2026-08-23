@@ -10,7 +10,8 @@ function load(src){return new Promise((resolve,reject)=>{const s=document.create
     await load('/app/features-v22.js?v=22.0.1');
     await load('/app/features-v22-creative.js?v=22.3.1');
     await load('/app/features-v24-beta.js?v=22.4.0');
-    window.toast?.('RC22.4 Beta • Criativos IA e feedback guiado prontos.');
+    await load('/app/features-v25-catalogs.js?v=22.5.0');
+    window.toast?.('RC22.5 Beta • Catálogos de amostra prontos para compartilhar.');
   }catch(e){
     console.error('RC22 loader',e);
     window.toast?.('Não foi possível carregar a RC22. Atualize a página.');
